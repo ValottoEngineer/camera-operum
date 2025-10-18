@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regras para clientes - apenas o dono pode ler/escrever
+    match /clients/{id} {
+      allow read, write: if request.auth != null && 
+                            resource.data.ownerUid == request.auth.uid;
+      allow create: if request.auth != null && 
+                       request.resource.data.ownerUid == request.auth.uid;
+    }
+    
+    // Regras para carteiras - apenas o dono pode ler/escrever
+    match /wallets/{id} {
+      allow read, write: if request.auth != null && 
+                            resource.data.ownerUid == request.auth.uid;
+      allow create: if request.auth != null && 
+                       request.resource.data.ownerUid == request.auth.uid;
+    }
+    
+    // Regras para usuários - apenas o próprio usuário pode ler/escrever
+    match /users/{uid} {
+      allow read, write: if request.auth != null && uid == request.auth.uid;
+    }
+  }
+}
