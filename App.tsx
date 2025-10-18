@@ -1,12 +1,16 @@
 import { registerRootComponent } from 'expo';
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { RootNavigator } from './src/app/navigation/RootNavigator';
+import { Platform } from 'react-native';
+import RootNavigator from './src/app/navigation/RootNavigator';
 
-function App() {
+export default function App() {
   return (
     <>
-      <StatusBar style="light" backgroundColor="#6402FF" />
+      <StatusBar 
+        style="light" 
+        backgroundColor={Platform.OS === 'web' ? undefined : "#6402FF"} 
+      />
       <RootNavigator />
     </>
   );

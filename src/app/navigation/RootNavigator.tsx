@@ -130,6 +130,8 @@ export const RootNavigator: React.FC = () => {
   );
 };
 
+export default RootNavigator;
+
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,

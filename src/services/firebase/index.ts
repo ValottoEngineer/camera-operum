@@ -1,29 +1,30 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeAuth, getAuth, browserLocalPersistence, indexedDBLocalPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import Constants from 'expo-constants';
-
-const firebaseConfig = {
-  apiKey: Constants.expoConfig?.extra?.firebaseApiKey || process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: Constants.expoConfig?.extra?.firebaseAuthDomain || process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: Constants.expoConfig?.extra?.firebaseProjectId || process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: Constants.expoConfig?.extra?.firebaseStorageBucket || process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: Constants.expoConfig?.extra?.firebaseMessagingSenderId || process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: Constants.expoConfig?.extra?.firebaseAppId || process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
-};
-
-// Validar se todas as variáveis estão presentes
-const requiredKeys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
-const missingKeys = requiredKeys.filter(key => !firebaseConfig[key as keyof typeof firebaseConfig]);
-
-if (missingKeys.length > 0) {
-  throw new Error(`Missing Firebase configuration: ${missingKeys.join(', ')}`);
-}
+import { Platform } from 'react-native';
+import { firebaseWebConfig } from './config';
 
 // Inicializar Firebase apenas se não estiver já inicializado
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const app = getApps().length === 0 ? initializeApp(firebaseWebConfig) : getApps()[0];
+
+// Configurar Auth com persistência adequada para cada plataforma
+let auth;
+if (Platform.OS === 'web') {
+  // Para web, usar initializeAuth com persistência adequada
+  try {
+    auth = initializeAuth(app, {
+      persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+    });
+  } catch (error) {
+    // Se já foi inicializado, usar getAuth
+    auth = getAuth(app);
+  }
+} else {
+  // Para mobile, usar getAuth normal
+  auth = getAuth(app);
+}
 
 // Exportar instâncias
-export const auth = getAuth(app);
+export { auth };
 export const db = getFirestore(app);
 export default app;
