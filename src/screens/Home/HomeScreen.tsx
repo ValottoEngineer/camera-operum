@@ -12,15 +12,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useAuthStore } from '@/state/authStore';
-import { getClients } from '@/services/firebase/db';
-import { useOnline } from '@/hooks/useOnline';
-import { useToast } from '@/hooks/useToast';
-import { Loading } from '@/components/UI/Loading';
-import { ErrorView } from '@/components/UI/ErrorView';
-import { OfflineBanner } from '@/components/UI/OfflineBanner';
-import { theme } from '@/styles/theme';
-import { AppStackParamList } from '@/app/navigation/types';
+import { useAuthStore } from '../../state/authStore';
+import { getClients } from '../../services/firebase/db';
+import { useOnline } from '../../hooks/useOnline';
+import { useToast } from '../../hooks/useToast';
+import { Loading } from '../../components/UI/Loading';
+import { ErrorView } from '../../components/UI/ErrorView';
+import { OfflineBanner } from '../../components/UI/OfflineBanner';
+import { theme } from '../../styles/theme';
+import { AppStackParamList } from '../navigation/types';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<AppStackParamList, 'Tabs'>;
 

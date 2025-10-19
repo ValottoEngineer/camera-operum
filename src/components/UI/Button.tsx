@@ -8,7 +8,7 @@ import {
   TextStyle,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { theme } from '@/styles/theme';
+import { theme } from '../../styles/theme';
 
 export interface ButtonProps {
   title: string;

@@ -9,8 +9,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { MotiView } from 'moti';
 
-import { Client } from '@/services/firebase/db';
-import { theme } from '@/styles/theme';
+import { Client } from '../../services/firebase/db';
+import { theme } from '../../styles/theme';
 
 export interface ClientCardProps {
   client: Client;

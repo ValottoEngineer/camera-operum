@@ -8,8 +8,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { MotiView } from 'moti';
 
-import { Wallet } from '@/services/firebase/db';
-import { theme } from '@/styles/theme';
+import { Wallet } from '../../services/firebase/db';
+import { theme } from '../../styles/theme';
 
 export interface WalletCardProps {
   wallet: Wallet;

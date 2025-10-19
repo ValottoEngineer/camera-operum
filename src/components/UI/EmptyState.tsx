@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from './Button';
-import { theme } from '@/styles/theme';
+import { theme } from '../../styles/theme';
 
 export interface EmptyStateProps {
   icon?: keyof typeof Ionicons.glyphMap;

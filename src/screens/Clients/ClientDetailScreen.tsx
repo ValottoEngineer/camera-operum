@@ -11,16 +11,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useAuthStore } from '@/state/authStore';
-import { getClientById, deleteClient, getWalletsByClient, Client, Wallet } from '@/services/firebase/db';
-import { useToast } from '@/hooks/useToast';
-import { Loading } from '@/components/UI/Loading';
-import { ErrorView } from '@/components/UI/ErrorView';
-import { EmptyState } from '@/components/UI/EmptyState';
-import { Button } from '@/components/UI/Button';
-import { WalletCard } from '@/components/domain/WalletCard';
-import { theme } from '@/styles/theme';
-import { AppStackParamList } from '@/app/navigation/types';
+import { useAuthStore } from '../../state/authStore';
+import { getClientById, deleteClient, getWalletsByClient, Client, Wallet } from '../../services/firebase/db';
+import { useToast } from '../../hooks/useToast';
+import { Loading } from '../../components/UI/Loading';
+import { ErrorView } from '../../components/UI/ErrorView';
+import { EmptyState } from '../../components/UI/EmptyState';
+import { Button } from '../../components/UI/Button';
+import { WalletCard } from '../../components/domain/WalletCard';
+import { theme } from '../../styles/theme';
+import { AppStackParamList } from '../navigation/types';
 
 type ClientDetailScreenNavigationProp = NativeStackNavigationProp<AppStackParamList, 'ClientDetail'>;
 type ClientDetailScreenRouteProp = RouteProp<AppStackParamList, 'ClientDetail'>;

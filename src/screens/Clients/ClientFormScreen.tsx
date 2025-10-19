@@ -15,15 +15,15 @@ import { z } from 'zod';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { Button } from '@/components/UI/Button';
-import { TextInput } from '@/components/UI/TextInput';
-import { Loading } from '@/components/UI/Loading';
-import { useAuthStore } from '@/state/authStore';
-import { createClient, updateClient, getClientById, checkCpfExists } from '@/services/firebase/db';
-import { useToast } from '@/hooks/useToast';
-import { validateCPF, formatCPF } from '@/utils/cpf';
-import { theme } from '@/styles/theme';
-import { AppStackParamList } from '@/app/navigation/types';
+import { Button } from '../../components/UI/Button';
+import { TextInput } from '../../components/UI/TextInput';
+import { Loading } from '../../components/UI/Loading';
+import { useAuthStore } from '../../state/authStore';
+import { createClient, updateClient, getClientById, checkCpfExists } from '../../services/firebase/db';
+import { useToast } from '../../hooks/useToast';
+import { validateCPF, formatCPF } from '../../utils/cpf';
+import { theme } from '../../styles/theme';
+import { AppStackParamList } from '../navigation/types';
 
 type ClientFormScreenNavigationProp = NativeStackNavigationProp<AppStackParamList, 'ClientForm'>;
 type ClientFormScreenRouteProp = RouteProp<AppStackParamList, 'ClientForm'>;

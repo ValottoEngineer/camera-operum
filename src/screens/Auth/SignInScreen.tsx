@@ -15,14 +15,14 @@ import { z } from 'zod';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { Button } from '@/components/UI/Button';
-import { TextInput } from '@/components/UI/TextInput';
-import { Loading } from '@/components/UI/Loading';
-import { useAuthStore } from '@/state/authStore';
-import { signIn } from '@/services/firebase/auth';
-import { useToast } from '@/hooks/useToast';
-import { theme } from '@/styles/theme';
-import { AuthStackParamList } from '@/app/navigation/types';
+import { Button } from '../../components/UI/Button';
+import { TextInput } from '../../components/UI/TextInput';
+import { Loading } from '../../components/UI/Loading';
+import { useAuthStore } from '../../state/authStore';
+import { signIn } from '../../services/firebase/auth';
+import { useToast } from '../../hooks/useToast';
+import { theme } from '../../styles/theme';
+import { AuthStackParamList } from '../navigation/types';
 
 type SignInScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'SignIn'>;
 

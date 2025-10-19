@@ -8,8 +8,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { MotiView } from 'moti';
 
-import { useOnline } from '@/hooks/useOnline';
-import { theme } from '@/styles/theme';
+import { useOnline } from '../../hooks/useOnline';
+import { theme } from '../../styles/theme';
 
 export const OfflineBanner: React.FC = () => {
   const { isOnline } = useOnline();

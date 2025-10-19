@@ -12,13 +12,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { useAuthStore } from '@/state/authStore';
-import { signOutUser } from '@/services/firebase/auth';
-import { useToast } from '@/hooks/useToast';
-import { Button } from '@/components/UI/Button';
-import { Loading } from '@/components/UI/Loading';
-import { theme } from '@/styles/theme';
-import { AppStackParamList } from '@/app/navigation/types';
+import { useAuthStore } from '../../state/authStore';
+import { signOutUser } from '../../services/firebase/auth';
+import { useToast } from '../../hooks/useToast';
+import { Button } from '../../components/UI/Button';
+import { Loading } from '../../components/UI/Loading';
+import { theme } from '../../styles/theme';
+import { AppStackParamList } from '../navigation/types';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<AppStackParamList, 'Tabs'>;
 

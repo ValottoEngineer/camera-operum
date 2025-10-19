@@ -16,21 +16,21 @@ import { z } from 'zod';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { Button } from '@/components/UI/Button';
-import { TextInput } from '@/components/UI/TextInput';
-import { Loading } from '@/components/UI/Loading';
-import { useAuthStore } from '@/state/authStore';
+import { Button } from '../../components/UI/Button';
+import { TextInput } from '../../components/UI/TextInput';
+import { Loading } from '../../components/UI/Loading';
+import { useAuthStore } from '../../state/authStore';
 import { 
   createWallet, 
   updateWallet, 
   getWalletById, 
   getClientById, 
   Client 
-} from '@/services/firebase/db';
-import { useToast } from '@/hooks/useToast';
-import { generateWalletExplanation } from '@/utils/xai';
-import { theme } from '@/styles/theme';
-import { AppStackParamList } from '@/app/navigation/types';
+} from '../../services/firebase/db';
+import { useToast } from '../../hooks/useToast';
+import { generateWalletExplanation } from '../../utils/xai';
+import { theme } from '../../styles/theme';
+import { AppStackParamList } from '../navigation/types';
 
 type WalletFormScreenNavigationProp = NativeStackNavigationProp<AppStackParamList, 'WalletForm'>;
 type WalletFormScreenRouteProp = RouteProp<AppStackParamList, 'WalletForm'>;

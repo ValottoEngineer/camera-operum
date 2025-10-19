@@ -10,7 +10,7 @@ import {
   TextInputProps as RNTextInputProps,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from '@/styles/theme';
+import { theme } from '../../styles/theme';
 
 export interface TextInputProps extends RNTextInputProps {
   label?: string;
