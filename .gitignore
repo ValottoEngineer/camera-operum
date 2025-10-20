@@ -46,6 +46,18 @@ buck-out/
 *.keystore
 !debug.keystore
 
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+*/fastlane/test_output
+
 # Bundle artifacts
 *.jsbundle
 
@@ -57,24 +69,32 @@ buck-out/
 dist/
 web-build/
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
 
-# Temporary files
-*.tmp
-*.temp
+# Metro
+.metro-health-check*
 
-# IDE
-.vscode/
-.idea/
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
-# Testing
-coverage/
+# macOS
+.DS_Store
+*.pem
 
-# Build outputs
-build/
-dist/
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# Generated files
+android/
+ios/
