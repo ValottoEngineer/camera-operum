@@ -101,7 +101,7 @@ export const ConfirmPasswordModal: React.FC<ConfirmPasswordModalProps> = ({
             }}
             error={error}
             secureTextEntry
-            containerStyle={{ marginBottom: theme.spacing.lg }}
+            style={{ marginBottom: theme.spacing.lg }}
           />
 
           <View

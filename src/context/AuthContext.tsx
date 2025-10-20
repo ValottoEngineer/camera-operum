@@ -6,6 +6,8 @@ interface AuthContextData {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
+  updateUserProfile: (name: string) => Promise<{ success: boolean; error?: string }>;
+  updateUserPassword: (currentPassword: string, newPassword: string) => Promise<{ success: boolean; error?: string }>;
   deleteAccount: (password: string) => Promise<{ success: boolean; error?: string }>;
   isLoading: boolean;
 }
@@ -79,6 +81,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserProfile = async (name: string) => {
+    setIsLoading(true);
+    try {
+      const result = await authService.updateUserProfile(name);
+      
+      if (result.success && result.user) {
+        setCurrentUser(result.user);
+        return { success: true };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Erro interno. Tente novamente.' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateUserPassword = async (currentPassword: string, newPassword: string) => {
+    setIsLoading(true);
+    try {
+      const result = await authService.updateUserPassword(currentPassword, newPassword);
+      
+      if (result.success) {
+        return { success: true };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Erro interno. Tente novamente.' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const deleteAccount = async (password: string) => {
     setIsLoading(true);
     try {
@@ -104,6 +141,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         register,
         logout,
+        updateUserProfile,
+        updateUserPassword,
         deleteAccount,
         isLoading,
       }}
