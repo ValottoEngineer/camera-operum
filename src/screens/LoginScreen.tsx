@@ -136,6 +136,7 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                   onBlur={onBlur}
                   error={errors.password?.message}
                   secureTextEntry
+                  style={{ marginBottom: theme.spacing.xl }}
                 />
               )}
             />
@@ -144,13 +145,12 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
               title="Entrar"
               onPress={handleSubmit(onSubmit)}
               loading={isSubmitting || isLoading}
-              style={{ marginTop: theme.spacing.lg }}
             />
 
             <InlineLink
               title="Criar conta"
               onPress={() => navigation.navigate('Register')}
-              style={{ marginTop: theme.spacing.lg }}
+              style={{ marginTop: theme.spacing.xl }}
             />
           </Card>
         </View>

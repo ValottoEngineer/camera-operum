@@ -170,6 +170,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
                   onBlur={onBlur}
                   error={errors.confirmPassword?.message}
                   secureTextEntry
+                  style={{ marginBottom: theme.spacing.xl }}
                 />
               )}
             />
@@ -178,13 +179,12 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
               title="Cadastrar"
               onPress={handleSubmit(onSubmit)}
               loading={isSubmitting || isLoading}
-              style={{ marginTop: theme.spacing.lg }}
             />
 
             <InlineLink
               title="Já tenho conta"
               onPress={() => navigation.navigate('Login')}
-              style={{ marginTop: theme.spacing.lg }}
+              style={{ marginTop: theme.spacing.xl }}
             />
           </Card>
         </View>

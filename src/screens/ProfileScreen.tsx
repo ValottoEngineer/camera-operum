@@ -168,12 +168,12 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
           style={{
             flex: 1,
             paddingHorizontal: theme.spacing.lg,
-            paddingTop: theme.spacing['2xl'],
+            paddingTop: theme.spacing.lg,
             paddingBottom: theme.spacing.xl,
           }}
         >
           {/* Informações do usuário */}
-          <Card style={{ marginBottom: theme.spacing.lg }}>
+          <Card style={{ marginBottom: theme.spacing.xl }}>
             <Text
               style={{
                 fontSize: theme.typography.sizes.xl,
@@ -185,13 +185,13 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
               Informações da Conta
             </Text>
             
-            <View style={{ marginBottom: theme.spacing.md }}>
+            <View style={{ marginBottom: theme.spacing.lg }}>
               <Text
                 style={{
                   fontSize: theme.typography.sizes.sm,
                   fontWeight: theme.typography.weights.medium,
                   color: theme.colors.neutral.secondary,
-                  marginBottom: theme.spacing.xs,
+                  marginBottom: theme.spacing.sm,
                 }}
               >
                 Nome
@@ -212,7 +212,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
                   fontSize: theme.typography.sizes.sm,
                   fontWeight: theme.typography.weights.medium,
                   color: theme.colors.neutral.secondary,
-                  marginBottom: theme.spacing.xs,
+                  marginBottom: theme.spacing.sm,
                 }}
               >
                 Email
@@ -229,7 +229,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
           </Card>
 
           {/* Atualizar nome */}
-          <Card style={{ marginBottom: theme.spacing.lg }}>
+          <Card style={{ marginBottom: theme.spacing.xl }}>
             <Text
               style={{
                 fontSize: theme.typography.sizes.xl,
@@ -254,6 +254,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
                   error={nameErrors.name?.message}
                   autoCapitalize="words"
                   autoCorrect={false}
+                  style={{ marginBottom: theme.spacing.lg }}
                 />
               )}
             />
@@ -262,12 +263,11 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
               title="Atualizar Nome"
               onPress={handleNameSubmit(onUpdateName)}
               loading={isUpdatingName}
-              style={{ marginTop: theme.spacing.md }}
             />
           </Card>
 
           {/* Atualizar senha */}
-          <Card style={{ marginBottom: theme.spacing.lg }}>
+          <Card style={{ marginBottom: theme.spacing.xl }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -288,7 +288,8 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
               <TouchableOpacity
                 onPress={() => setShowPasswordForm(!showPasswordForm)}
                 style={{
-                  padding: theme.spacing.sm,
+                  paddingHorizontal: theme.spacing.md,
+                  paddingVertical: theme.spacing.sm,
                   borderRadius: theme.borderRadius.md,
                   backgroundColor: showPasswordForm ? theme.colors.neon.electric : theme.colors.neutral.border,
                 }}
@@ -319,6 +320,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
                       onBlur={onBlur}
                       error={passwordErrors.currentPassword?.message}
                       secureTextEntry
+                      style={{ marginBottom: theme.spacing.lg }}
                     />
                   )}
                 />
@@ -335,6 +337,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
                       onBlur={onBlur}
                       error={passwordErrors.newPassword?.message}
                       secureTextEntry
+                      style={{ marginBottom: theme.spacing.lg }}
                     />
                   )}
                 />
@@ -351,6 +354,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
                       onBlur={onBlur}
                       error={passwordErrors.confirmNewPassword?.message}
                       secureTextEntry
+                      style={{ marginBottom: theme.spacing.lg }}
                     />
                   )}
                 />
@@ -359,14 +363,13 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
                   title="Atualizar Senha"
                   onPress={handlePasswordSubmit(onUpdatePassword)}
                   loading={isUpdatingPassword}
-                  style={{ marginTop: theme.spacing.md }}
                 />
               </>
             )}
           </Card>
 
           {/* Ações perigosas */}
-          <Card style={{ marginBottom: theme.spacing.lg }}>
+          <Card style={{ marginBottom: theme.spacing.xl }}>
             <Text
               style={{
                 fontSize: theme.typography.sizes.xl,
@@ -383,7 +386,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
               onPress={onDeleteAccount}
               style={{
                 borderColor: theme.colors.error,
-                marginBottom: theme.spacing.md,
+                marginBottom: theme.spacing.xl,
               }}
             />
 
@@ -397,6 +400,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
           <SecondaryButton
             title="Voltar ao Dashboard"
             onPress={() => navigation.goBack()}
+            style={{ marginBottom: theme.spacing.xl }}
           />
         </View>
       </ScrollView>
