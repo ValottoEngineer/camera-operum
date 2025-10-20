@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,8 +12,8 @@ import { theme } from '../styles/theme';
 import { SimulatorInputs, SIMULATOR_PRESETS } from '../types/simulator';
 
 const simulatorSchema = z.object({
-  initialAmount: z.number().min(100, 'Valor mínimo: R$ 100').max(1000000, 'Valor máximo: R$ 1.000.000'),
-  monthlyContribution: z.number().min(0, 'Aporte não pode ser negativo').max(100000, 'Aporte máximo: R$ 100.000'),
+  initialAmount: z.number().min(1, 'Valor mínimo: R$ 1').max(1000000, 'Valor máximo: R$ 1.000.000'),
+  monthlyContribution: z.number().min(0, 'Aporte não pode ser negativo').max(1000000, 'Aporte máximo: R$ 1.000.000'),
   period: z.number().min(1, 'Período mínimo: 1 ano').max(30, 'Período máximo: 30 anos'),
   selectedStocks: z.array(z.string()).min(1, 'Selecione pelo menos uma ação'),
 });
@@ -41,8 +42,8 @@ export const SimulatorForm: React.FC<SimulatorFormProps> = ({
   } = useForm<SimulatorFormData>({
     resolver: zodResolver(simulatorSchema),
     defaultValues: {
-      initialAmount: initialValues?.initialAmount || 10000,
-      monthlyContribution: initialValues?.monthlyContribution || 500,
+      initialAmount: initialValues?.initialAmount || 0,
+      monthlyContribution: initialValues?.monthlyContribution || 0,
       period: initialValues?.period || 10,
       selectedStocks: initialValues?.selectedStocks || ['ITUB4'],
     },
@@ -52,8 +53,9 @@ export const SimulatorForm: React.FC<SimulatorFormProps> = ({
 
   const handlePresetSelect = (preset: typeof SIMULATOR_PRESETS[0]) => {
     setSelectedPreset(preset.id);
-    setValue('initialAmount', preset.inputs.initialAmount || 10000);
-    setValue('monthlyContribution', preset.inputs.monthlyContribution || 500);
+    // Define valores como 0 para mostrar placeholders
+    setValue('initialAmount', 0);
+    setValue('monthlyContribution', 0);
     setValue('period', preset.inputs.period || 10);
     setValue('selectedStocks', preset.inputs.selectedStocks || ['ITUB4']);
   };
@@ -71,6 +73,28 @@ export const SimulatorForm: React.FC<SimulatorFormProps> = ({
       style: 'currency',
       currency: 'BRL',
     }).format(value);
+  };
+
+  const parseValue = (text: string) => {
+    // Remove apenas espaços e caracteres não numéricos, mantendo números
+    const cleanText = text.replace(/[^\d]/g, '');
+    
+    // Se estiver vazio, retorna 0
+    if (!cleanText) return 0;
+    
+    // Converte para número
+    const value = parseInt(cleanText, 10);
+    
+    // Se não for um número válido, retorna 0
+    return isNaN(value) ? 0 : value;
+  };
+
+  const formatValue = (value: number) => {
+    // Se o valor for 0, retorna string vazia para mostrar placeholder
+    if (!value || value === 0) return '';
+    
+    // Formata como moeda brasileira simples
+    return `R$ ${value.toLocaleString('pt-BR')}`;
   };
 
   const formatSliderValue = (value: number, type: 'currency' | 'years') => {
@@ -112,9 +136,12 @@ export const SimulatorForm: React.FC<SimulatorFormProps> = ({
                   alignItems: 'center',
                 }}
               >
-                <Text style={{ fontSize: 24, marginBottom: theme.spacing.xs }}>
-                  {preset.icon}
-                </Text>
+                <Ionicons 
+                  name={preset.icon as any} 
+                  size={24} 
+                  color={preset.color} 
+                  style={{ marginBottom: theme.spacing.xs }} 
+                />
                 <Text
                   style={{
                     fontSize: theme.typography.sizes.sm,
@@ -170,10 +197,10 @@ export const SimulatorForm: React.FC<SimulatorFormProps> = ({
                   Valor Inicial
                 </Text>
                 <TextField
-                  placeholder="R$ 10.000"
-                  value={formatCurrency(value)}
+                  placeholder="Ex: 10000"
+                  value={formatValue(value)}
                   onChangeText={(text) => {
-                    const numericValue = parseFloat(text.replace(/[^\d]/g, '')) || 0;
+                    const numericValue = parseValue(text);
                     onChange(numericValue);
                   }}
                   error={errors.initialAmount?.message}
@@ -200,10 +227,10 @@ export const SimulatorForm: React.FC<SimulatorFormProps> = ({
                   Aporte Mensal
                 </Text>
                 <TextField
-                  placeholder="R$ 500"
-                  value={formatCurrency(value)}
+                  placeholder="Ex: 500"
+                  value={formatValue(value)}
                   onChangeText={(text) => {
-                    const numericValue = parseFloat(text.replace(/[^\d]/g, '')) || 0;
+                    const numericValue = parseValue(text);
                     onChange(numericValue);
                   }}
                   error={errors.monthlyContribution?.message}

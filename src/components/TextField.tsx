@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TextInput, TextInputProps, ViewStyle } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TextInputProps, ViewStyle, StyleSheet } from 'react-native';
 import { theme } from '../styles/theme';
 
 interface TextFieldProps extends TextInputProps {
@@ -14,50 +14,74 @@ export const TextField: React.FC<TextFieldProps> = ({
   containerStyle,
   style,
   value,
+  onFocus,
+  onBlur,
   ...props
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = (e: any) => {
+    setIsFocused(true);
+    onFocus?.(e);
+  };
+
+  const handleBlur = (e: any) => {
+    setIsFocused(false);
+    onBlur?.(e);
+  };
+
   return (
-    <View style={[{ marginBottom: theme.spacing.md }, containerStyle]}>
-      <Text
-        style={{
-          fontSize: theme.typography.sizes.sm,
-          fontWeight: theme.typography.weights.medium,
-          color: theme.colors.neutral.primary,
-          marginBottom: theme.spacing.xs,
-        }}
-      >
-        {label}
-      </Text>
+    <View style={[styles.container, containerStyle]}>
+      <Text style={styles.label}>{label}</Text>
       <TextInput
         style={[
-          {
-            borderWidth: 1,
-            borderColor: error ? theme.colors.error : theme.colors.neutral.border,
-            borderRadius: theme.borderRadius.md,
-            paddingHorizontal: theme.spacing.md,
-            paddingVertical: theme.spacing.sm,
-            fontSize: theme.typography.sizes.base,
-            color: theme.colors.neutral.primary,
-            backgroundColor: theme.colors.surface,
-            minHeight: 48,
-          },
+          styles.input,
+          isFocused && styles.inputFocused,
+          error && styles.inputError,
           style,
         ]}
         placeholderTextColor={theme.colors.neutral.secondary}
         value={value || ''}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...props}
       />
       {error && (
-        <Text
-          style={{
-            color: theme.colors.error,
-            fontSize: theme.typography.sizes.xs,
-            marginTop: theme.spacing.xs,
-          }}
-        >
-          {error}
-        </Text>
+        <Text style={styles.errorText}>{error}</Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: theme.spacing.lg,
+  },
+  label: {
+    ...theme.typography.bodySmall,
+    color: theme.colors.neutral.primary,
+    marginBottom: theme.spacing.sm,
+    fontWeight: theme.typography.weights.medium,
+  },
+  input: {
+    height: 52,
+    ...theme.glassmorphism.light,
+    borderRadius: 12,
+    paddingHorizontal: theme.spacing.lg,
+    fontSize: theme.typography.sizes.base,
+    color: theme.colors.neutral.primary,
+  },
+  inputFocused: {
+    borderColor: theme.colors.neon.electric,
+    borderWidth: 2,
+  },
+  inputError: {
+    borderColor: theme.colors.error,
+    borderWidth: 2,
+  },
+  errorText: {
+    ...theme.typography.caption,
+    color: theme.colors.error,
+    marginTop: theme.spacing.xs,
+  },
+});

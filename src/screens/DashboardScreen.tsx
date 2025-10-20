@@ -7,6 +7,7 @@ import { GradientContainer } from '../components/GradientContainer';
 import { Card } from '../components/Card';
 import { SecondaryButton } from '../components/SecondaryButton';
 import { PortfolioCard } from '../components/PortfolioCard';
+import { IconButton } from '../components/IconButton';
 import { useAuth } from '../context/AuthContext';
 import { brapiService } from '../services/brapiService';
 import { Portfolio } from '../types/portfolio';
@@ -199,62 +200,26 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               )}
             </View>
             <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
-              <TouchableOpacity
+              <IconButton
+                iconName="search"
                 onPress={() => navigation.navigate('Search')}
-                style={{
-                  padding: theme.spacing.sm,
-                  borderRadius: theme.borderRadius.md,
-                  backgroundColor: theme.colors.neon.cyan,
-                }}
-              >
-                <Text
-                  style={{
-                    color: theme.colors.surface,
-                    fontSize: theme.typography.sizes.sm,
-                    fontWeight: theme.typography.weights.medium,
-                  }}
-                >
-                  Buscar
-                </Text>
-              </TouchableOpacity>
+                color={theme.colors.neon.electric}
+                size="medium"
+              />
               
-              <TouchableOpacity
+              <IconButton
+                iconName="calculator"
                 onPress={() => navigation.navigate('Simulator')}
-                style={{
-                  padding: theme.spacing.sm,
-                  borderRadius: theme.borderRadius.md,
-                  backgroundColor: theme.colors.neon.purple,
-                }}
-              >
-                <Text
-                  style={{
-                    color: theme.colors.surface,
-                    fontSize: theme.typography.sizes.sm,
-                    fontWeight: theme.typography.weights.medium,
-                  }}
-                >
-                  Simulador
-                </Text>
-              </TouchableOpacity>
+                color={theme.colors.neon.electric}
+                size="medium"
+              />
               
-              <TouchableOpacity
+              <IconButton
+                iconName="person"
                 onPress={() => navigation.navigate('Profile')}
-                style={{
-                  padding: theme.spacing.sm,
-                  borderRadius: theme.borderRadius.md,
-                  backgroundColor: theme.colors.neon.electric,
-                }}
-              >
-                <Text
-                  style={{
-                    color: theme.colors.surface,
-                    fontSize: theme.typography.sizes.sm,
-                    fontWeight: theme.typography.weights.medium,
-                  }}
-                >
-                  Perfil
-                </Text>
-              </TouchableOpacity>
+                color={theme.colors.neon.electric}
+                size="medium"
+              />
             </View>
           </View>
 

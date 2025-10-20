@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GradientContainer } from '../components/GradientContainer';
 import { SearchBar } from '../components/SearchBar';
 import { StockListItem } from '../components/StockListItem';
+import { BackButton } from '../components/BackButton';
 import { Card } from '../components/Card';
 import { useAuth } from '../context/AuthContext';
 import { brapiService } from '../services/brapiService';
@@ -143,16 +144,7 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
             marginBottom: theme.spacing.md,
           }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{
-              padding: theme.spacing.sm,
-              borderRadius: theme.borderRadius.md,
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            }}
-          >
-            <Text style={{ fontSize: 18, color: theme.colors.surface }}>←</Text>
-          </TouchableOpacity>
+          <BackButton onPress={() => navigation.goBack()} color={theme.colors.surface} />
         </View>
 
         <Text

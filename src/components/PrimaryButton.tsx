@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, ViewStyle } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, ViewStyle, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '../styles/theme';
 
 interface PrimaryButtonProps {
@@ -21,37 +22,51 @@ export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 
   return (
     <TouchableOpacity
-      style={[
-        {
-          backgroundColor: isDisabled ? theme.colors.neutral.secondary : theme.colors.neon.electric,
-          borderRadius: theme.borderRadius.lg,
-          paddingVertical: theme.spacing.md,
-          paddingHorizontal: theme.spacing.lg,
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: 48,
-          ...theme.shadows.sm,
-        },
-        style,
-      ]}
+      style={[styles.container, isDisabled && styles.disabled, style]}
       onPress={onPress}
       disabled={isDisabled}
+      activeOpacity={0.7}
       accessibilityLabel={title}
       accessibilityRole="button"
     >
-      {loading ? (
-        <ActivityIndicator color={theme.colors.surface} size="small" />
-      ) : (
-        <Text
-          style={{
-            color: theme.colors.surface,
-            fontSize: theme.typography.sizes.base,
-            fontWeight: theme.typography.weights.semibold,
-          }}
-        >
-          {title}
-        </Text>
-      )}
+      <LinearGradient
+        colors={isDisabled ? [theme.colors.neutral.border, theme.colors.neutral.border] : theme.gradients.primary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.gradient}
+      >
+        {loading ? (
+          <ActivityIndicator color={theme.colors.surface} size="small" />
+        ) : (
+          <Text style={[styles.text, isDisabled && styles.disabledText]}>{title}</Text>
+        )}
+      </LinearGradient>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    height: 52,
+    borderRadius: 16,
+    overflow: 'hidden',
+    ...theme.shadows.md,
+  },
+  gradient: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xl,
+  },
+  disabled: {
+    opacity: 0.6,
+  },
+  text: {
+    ...theme.typography.button,
+    color: theme.colors.surface,
+  },
+  disabledText: {
+    color: theme.colors.neutral.secondary,
+  },
+});

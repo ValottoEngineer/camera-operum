@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Card } from './Card';
 import { theme } from '../styles/theme';
 import { StockQuote } from '../types/brapi';
@@ -56,9 +57,11 @@ export const StockListItem: React.FC<StockListItemProps> = ({
             style={styles.favoriteButton}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <Text style={[styles.favoriteIcon, { color: isFavorite ? theme.colors.error : theme.colors.neutral.border }]}>
-              {isFavorite ? '❤️' : '🤍'}
-            </Text>
+            <Ionicons
+              name={isFavorite ? 'heart' : 'heart-outline'}
+              size={20}
+              color={isFavorite ? theme.colors.neon.pink : theme.colors.neutral.border}
+            />
           </TouchableOpacity>
         )}
       </TouchableOpacity>

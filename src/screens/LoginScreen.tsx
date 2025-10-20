@@ -10,6 +10,7 @@ import { Card } from '../components/Card';
 import { TextField } from '../components/TextField';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { InlineLink } from '../components/InlineLink';
+import { IconButton } from '../components/IconButton';
 import { useAuth } from '../context/AuthContext';
 import { loginSchema, LoginFormData } from '../validation/schemas';
 import { theme } from '../styles/theme';

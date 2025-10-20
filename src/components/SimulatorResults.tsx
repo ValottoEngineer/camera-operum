@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Card } from './Card';
 import { SimpleLineChart } from './charts/SimpleLineChart';
@@ -63,7 +64,7 @@ export const SimulatorResults: React.FC<SimulatorResultsProps> = ({
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: theme.spacing.lg }}>
             {/* Total Investido */}
             <View style={{ alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: 24, marginBottom: theme.spacing.xs }}>💰</Text>
+              <Ionicons name="cash" size={24} color={theme.colors.neon.purple} style={{ marginBottom: theme.spacing.xs }} />
               <Text
                 style={{
                   fontSize: theme.typography.sizes.lg,
@@ -87,7 +88,7 @@ export const SimulatorResults: React.FC<SimulatorResultsProps> = ({
 
             {/* Rendimento */}
             <View style={{ alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: 24, marginBottom: theme.spacing.xs }}>📈</Text>
+              <Ionicons name="trending-up" size={24} color={theme.colors.success} style={{ marginBottom: theme.spacing.xs }} />
               <Text
                 style={{
                   fontSize: theme.typography.sizes.lg,
@@ -119,7 +120,7 @@ export const SimulatorResults: React.FC<SimulatorResultsProps> = ({
               alignItems: 'center',
             }}
           >
-            <Text style={{ fontSize: 24, marginBottom: theme.spacing.sm }}>🎯</Text>
+            <Ionicons name="target" size={24} color={theme.colors.neon.electric} style={{ marginBottom: theme.spacing.sm }} />
             <Text
               style={{
                 fontSize: theme.typography.sizes['2xl'],
@@ -352,7 +353,7 @@ export const SimulatorResults: React.FC<SimulatorResultsProps> = ({
               fontStyle: 'italic',
             }}
           >
-            ⚠️ Lembre-se: Esta é uma projeção baseada em retornos históricos. 
+            Lembre-se: Esta é uma projeção baseada em retornos históricos. 
             Investimentos reais podem ter variações e riscos.
           </Text>
         </View>

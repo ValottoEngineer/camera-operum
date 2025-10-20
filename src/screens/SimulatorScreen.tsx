@@ -5,6 +5,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GradientContainer } from '../components/GradientContainer';
 import { SimulatorForm } from '../components/SimulatorForm';
 import { SimulatorResults } from '../components/SimulatorResults';
+import { BackButton } from '../components/BackButton';
+import { IconButton } from '../components/IconButton';
 import { simulatorService } from '../services/simulatorService';
 import { theme } from '../styles/theme';
 import { SimulatorInputs, SimulatorResults as SimulatorResultsType } from '../types/simulator';
@@ -62,27 +64,14 @@ export const SimulatorScreen: React.FC<Props> = ({ navigation }) => {
             marginBottom: theme.spacing.md,
           }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{
-              padding: theme.spacing.sm,
-              borderRadius: theme.borderRadius.md,
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            }}
-          >
-            <Text style={{ fontSize: 18, color: theme.colors.surface }}>←</Text>
-          </TouchableOpacity>
+          <BackButton onPress={() => navigation.goBack()} color={theme.colors.surface} />
           
-          <TouchableOpacity
+          <IconButton
+            iconName="refresh"
             onPress={handleNewSimulation}
-            style={{
-              padding: theme.spacing.sm,
-              borderRadius: theme.borderRadius.md,
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            }}
-          >
-            <Text style={{ fontSize: 18, color: theme.colors.surface }}>🔄</Text>
-          </TouchableOpacity>
+            color={theme.colors.surface}
+            size="medium"
+          />
         </View>
 
         <Text

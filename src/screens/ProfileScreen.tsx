@@ -11,6 +11,8 @@ import { TextField } from '../components/TextField';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { SecondaryButton } from '../components/SecondaryButton';
 import { ConfirmPasswordModal } from '../components/ConfirmPasswordModal';
+import { BackButton } from '../components/BackButton';
+import { IconButton } from '../components/IconButton';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/auth';
 import { updateNameSchema, updatePasswordSchema, UpdateNameFormData, UpdatePasswordFormData } from '../validation/schemas';
@@ -411,25 +413,10 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
           </Card>
 
           {/* Botão voltar */}
-          <TouchableOpacity
+          <SecondaryButton
+            title="Voltar ao Dashboard"
             onPress={() => navigation.goBack()}
-            style={{
-              padding: theme.spacing.md,
-              borderRadius: theme.borderRadius.lg,
-              backgroundColor: theme.colors.neon.purple,
-              alignItems: 'center',
-            }}
-          >
-            <Text
-              style={{
-                color: theme.colors.surface,
-                fontSize: theme.typography.sizes.base,
-                fontWeight: theme.typography.weights.semibold,
-              }}
-            >
-              Voltar ao Dashboard
-            </Text>
-          </TouchableOpacity>
+          />
         </View>
       </ScrollView>
 

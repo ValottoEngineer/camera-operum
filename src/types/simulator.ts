@@ -67,7 +67,7 @@ export const SIMULATOR_PRESETS: SimulatorPreset[] = [
       selectedStocks: ['ITUB4'],
     },
     color: '#2196F3',
-    icon: '🛡️',
+    icon: 'shield-checkmark',
   },
   {
     id: 'moderate',
@@ -80,7 +80,7 @@ export const SIMULATOR_PRESETS: SimulatorPreset[] = [
       selectedStocks: ['PETR4', 'VALE3'],
     },
     color: '#9C27B0',
-    icon: '⚖️',
+    icon: 'balance',
   },
   {
     id: 'aggressive',
@@ -93,7 +93,7 @@ export const SIMULATOR_PRESETS: SimulatorPreset[] = [
       selectedStocks: ['MGLU3'],
     },
     color: '#E91E63',
-    icon: '🚀',
+    icon: 'rocket',
   },
   {
     id: 'balanced',
@@ -106,6 +106,6 @@ export const SIMULATOR_PRESETS: SimulatorPreset[] = [
       selectedStocks: ['ITUB4', 'PETR4', 'VALE3', 'MGLU3'],
     },
     color: '#4CAF50',
-    icon: '📊',
+    icon: 'bar-chart',
   },
 ];

@@ -50,17 +50,17 @@ export const PORTFOLIO_CONFIGS = {
 export const RISK_LEVELS = {
   conservador: {
     label: 'Baixo Risco',
-    icon: '🛡️',
+    icon: 'shield-checkmark',
     description: 'Preservação de capital',
   },
   moderado: {
     label: 'Risco Moderado',
-    icon: '⚖️',
+    icon: 'balance',
     description: 'Equilíbrio risco/retorno',
   },
   arrojado: {
     label: 'Alto Risco',
-    icon: '🚀',
+    icon: 'rocket',
     description: 'Máximo potencial de crescimento',
   },
 } as const;

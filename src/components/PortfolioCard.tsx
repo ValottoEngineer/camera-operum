@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Portfolio } from '../types/portfolio';
 import { StockCard } from './StockCard';
 import { brapiService } from '../services/brapiService';
