@@ -1,25 +1,25 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { AuthStackParamList } from '../types';
-import { LoginScreen } from '../screens/Auth/LoginScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LoginScreen } from '../screens/LoginScreen';
+import { RegisterScreen } from '../screens/RegisterScreen';
 
-const Stack = createStackNavigator<AuthStackParamList>();
+export type AuthStackParamList = {
+  Login: undefined;
+  Register: undefined;
+};
 
-interface AuthStackProps {
-  onLoginSuccess: () => void;
-}
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-export const AuthStack: React.FC<AuthStackProps> = ({ onLoginSuccess }) => {
+export const AuthStack: React.FC = () => {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        gestureEnabled: false,
+        contentStyle: { backgroundColor: '#F2F2F2' },
       }}
     >
-      <Stack.Screen name="Login">
-        {(props) => <LoginScreen {...props} onLoginSuccess={onLoginSuccess} />}
-      </Stack.Screen>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
   );
 };

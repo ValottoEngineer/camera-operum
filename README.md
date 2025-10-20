@@ -1,192 +1,105 @@
-# Operum Mobile App - SP4
+# Operum Mobile App
 
-Aplicativo mobile React Native desenvolvido com Expo e Firebase nativo para gestão de clientes de investimento.
+Um aplicativo mobile simples e funcional desenvolvido com **Expo + React Native + TypeScript** para demonstração de fluxos de autenticação e dashboard.
 
-## 📱 Sobre o Projeto
+## 🎨 Identidade Visual
 
-**Operum** é um MVP desenvolvido para o SP4 (Semestre 4) que permite:
-- Autenticação segura via Firebase Auth
-- CRUD completo de clientes com perfil de risco e liquidez
-- Interface futurista e minimalista
-- Sincronização em tempo real via Firestore
-- Suporte offline nativo
+O app utiliza uma paleta futurista neon com tons frios e vibrantes:
+- **Rosa Futurista**: `#EE0BFF`
+- **Lilás Neon**: `#9C0AE8` 
+- **Roxo Elétrico**: `#6402FF`
+- **Azul Íon**: `#240AE8`
+- **Azul Futuro**: `#0B30FF`
 
-## 🚀 Setup Super Simples
+## 🚀 Pré-requisitos
 
-### 1. Instalar e executar
-```bash
-npm install
-npm start
-```
+- Node.js (versão 16 ou superior)
+- Expo CLI (`npm install -g @expo/cli`)
+- Dispositivo móvel com Expo Go ou emulador
 
-### 2. Escolher plataforma
-- **Web**: Pressione `w` no terminal (desenvolvimento rápido)
-- **Android**: Pressione `a` no terminal
-- **iOS**: Pressione `i` no terminal
+## 📦 Instalação
 
-## 🔧 Configuração Firebase (apenas para build nativo)
+1. Clone o repositório
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
 
-### Para desenvolvimento web:
-- ✅ Funciona imediatamente com `npm start` + `w`
-- ✅ Dados mock para desenvolvimento rápido
+3. Inicie o projeto:
+   ```bash
+   npm start
+   ```
 
-### Para Android/iOS nativo:
-1. Configure Firebase Console
-2. Baixe `google-services.json` e `GoogleService-Info.plist`
-3. Execute:
-```bash
-npm run prebuild
-npm run android  # ou npm run ios
-```
+4. Escaneie o QR code com o Expo Go (Android/iOS) ou pressione `i` para iOS Simulator / `a` para Android Emulator
 
-## 📱 Scripts Disponíveis
+## 🔧 Funcionalidades
 
-```bash
-npm start          # Expo Dev Server (recomendado)
-npm run android    # Android via Expo
-npm run ios        # iOS via Expo  
-npm run web        # Web via Expo
-npm run prebuild   # Gerar código nativo (só se necessário)
-npm run setup      # Verificar configuração
-```
+### Telas Disponíveis
 
-## ⚡ Desenvolvimento Rápido
+- **Login**: Autenticação com email e senha
+- **Cadastro**: Criação de nova conta com validação
+- **Dashboard**: Tela principal com cards informativos
 
-1. `npm install`
-2. `npm start`
-3. Pressione `w` para web
-4. Comece a desenvolver!
+### Fluxos de Navegação
 
-O app funciona perfeitamente no navegador para desenvolvimento, e você só precisa do build nativo quando for testar no dispositivo físico.
+- Login ↔ Cadastro (navegação entre telas de autenticação)
+- Após login bem-sucedido → Dashboard
+- Logout → retorna para tela de Login
 
-## 🔥 Configuração Firestore
+### Validações
 
-### Regras de Segurança
+- **Email**: Formato válido obrigatório
+- **Senha**: Mínimo 6 caracteres
+- **Nome**: Mínimo 2 caracteres
+- **Confirmar senha**: Deve coincidir com a senha
 
-Configure no Firebase Console > Firestore > Rules:
+### Feedback
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{uid}/clientes/{docId} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
-    }
-  }
-}
-```
+- Mensagens de erro inline abaixo dos campos
+- Toasts de sucesso/erro para ações
+- Estados de carregamento nos botões
 
-### Estrutura de Dados
+## 🔐 Autenticação
 
-```
-users/{uid}/clientes/{docId}
-├── nome: string
-├── perfilRisco: 'conservador' | 'moderado' | 'agressivo'
-├── liquidez: 'baixa' | 'média' | 'alta'
-├── objetivos: string
-└── createdAt: Timestamp
-```
+**Nota**: Este app utiliza autenticação simulada (mock) sem backend. Os dados são armazenados apenas em memória durante a sessão.
 
-## 🎨 Funcionalidades
+- Registre uma nova conta para testar
+- Faça login com as credenciais criadas
+- Os dados são perdidos ao fechar o app
 
-### Autenticação
-- ✅ Login com email/senha
-- ✅ Cadastro de novos usuários
-- ✅ Recuperação de senha
-- ✅ Validação de formulários
-- ✅ Mensagens de erro em português
+## 🛠 Tecnologias
 
-### Gestão de Clientes
-- ✅ Lista de clientes em tempo real
-- ✅ Criar novo cliente
-- ✅ Editar cliente existente
-- ✅ Excluir cliente (com confirmação)
-- ✅ Filtros por perfil de risco e liquidez
-- ✅ Interface responsiva
+- **Expo** - Plataforma de desenvolvimento
+- **React Native** - Framework mobile
+- **TypeScript** - Tipagem estática
+- **React Navigation** - Navegação
+- **React Hook Form** - Gerenciamento de formulários
+- **Zod** - Validação de schemas
+- **Expo Linear Gradient** - Gradientes
+- **React Native Toast Message** - Notificações
 
-### UX/UI
-- ✅ Tema futurista com gradientes
-- ✅ Navegação fluida
-- ✅ Loading states
-- ✅ Feedback de sucesso/erro
-- ✅ Tratamento de interrupções de rede
-- ✅ Acessibilidade básica
-
-## 📁 Estrutura do Projeto
+## 📱 Estrutura do Projeto
 
 ```
 src/
-├── components/
-│   ├── UI/                 # Componentes reutilizáveis
-│   └── Layout/             # Componentes de layout
-├── navigation/             # Configuração de navegação
-├── screens/
-│   ├── Auth/              # Telas de autenticação
-│   └── App/               # Telas principais do app
-├── services/              # Serviços Firebase
-├── styles/                # Tema e estilos
-├── types/                 # Definições TypeScript
-└── utils/                 # Utilitários
+├── components/          # Componentes reutilizáveis
+├── context/            # Context API para estado global
+├── navigation/         # Configuração de navegação
+├── screens/           # Telas da aplicação
+├── services/          # Serviços (mock de autenticação)
+├── styles/            # Tema e estilos
+├── types/             # Definições de tipos
+└── validation/        # Schemas de validação
 ```
 
-## 🔧 Scripts Disponíveis
+## 🎯 Próximos Passos
 
-```bash
-npm start          # Iniciar Expo Dev Server
-npm run android    # Executar no Android
-npm run ios        # Executar no iOS
-npm run prebuild   # Gerar código nativo
-npm run clean      # Limpar e regenerar código nativo
-```
-
-## 📱 Testando o App
-
-### 1. Autenticação
-- Crie uma conta com email válido
-- Teste login/logout
-- Teste recuperação de senha
-
-### 2. CRUD de Clientes
-- Adicione clientes com diferentes perfis
-- Edite informações existentes
-- Exclua clientes
-- Verifique sincronização em tempo real
-
-### 3. Validações
-- Teste campos obrigatórios
-- Teste formatos inválidos
-- Teste cenários de erro de rede
-
-## ⚠️ Notas Importantes
-
-- **SDK Nativo**: Usa apenas `@react-native-firebase/*`, NÃO `firebase/app`
-- **Offline**: Firestore tem persistência offline habilitada por padrão
-- **Segurança**: Dados são isolados por usuário via regras Firestore
-- **LGPD**: Informações sobre uso de dados incluídas no app
-
-## 🐛 Solução de Problemas
-
-### Erro de build Android
-```bash
-npx expo prebuild --clean
-npx expo run:android
-```
-
-### Erro de build iOS
-```bash
-cd ios && pod install && cd ..
-npx expo run:ios
-```
-
-### Firebase não conecta
-- Verifique se os arquivos nativos estão nos locais corretos
-- Confirme se as regras do Firestore estão configuradas
-- Verifique se a autenticação está habilitada no Firebase Console
+- Integração com backend real
+- Persistência de dados local
+- Funcionalidades do dashboard
+- Testes automatizados
+- Deploy para stores
 
 ## 📄 Licença
 
-Projeto acadêmico - FIAP SP4
-
----
-
-**Desenvolvido com ❤️ usando React Native + Firebase Nativo**
+Este projeto é para fins educacionais e demonstração.

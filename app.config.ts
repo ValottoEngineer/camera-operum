@@ -1,9 +1,9 @@
-import { ConfigContext, ExpoConfig } from 'expo/config';
+import { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Operum',
-  slug: 'operum-mobile-app',
+  slug: 'operum-mobile',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
@@ -11,24 +11,23 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#6402FF'
+    backgroundColor: '#F2F2F2'
   },
   assetBundlePatterns: [
     '**/*'
   ],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.company.operumappapple'
+    bundleIdentifier: 'com.operum.mobile'
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#6402FF'
+      backgroundColor: '#F2F2F2'
     },
-    package: 'com.company.operumappandroid'
+    package: 'com.operum.mobile'
   },
   web: {
-    bundler: 'metro'
-  },
-  platforms: ['ios', 'android', 'web']
+    favicon: './assets/favicon.png'
+  }
 });

@@ -1,35 +1,22 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { AppStackParamList } from '../types';
-import { HomeScreen } from '../screens/App/HomeScreen';
-import { ClienteFormScreen } from '../screens/App/ClienteFormScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { DashboardScreen } from '../screens/DashboardScreen';
 
-const Stack = createStackNavigator<AppStackParamList>();
+export type AppStackParamList = {
+  Dashboard: undefined;
+};
 
-interface AppStackProps {
-  userId: string;
-}
+const Stack = createNativeStackNavigator<AppStackParamList>();
 
-export const AppStack: React.FC<AppStackProps> = ({ userId }) => {
+export const AppStack: React.FC = () => {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        gestureEnabled: true,
+        contentStyle: { backgroundColor: '#F2F2F2' },
       }}
     >
-      <Stack.Screen name="Home">
-        {(props) => <HomeScreen {...props} userId={userId} />}
-      </Stack.Screen>
-      <Stack.Screen 
-        name="ClienteForm"
-        options={{
-          presentation: 'modal',
-          gestureEnabled: true,
-        }}
-      >
-        {(props) => <ClienteFormScreen {...props} userId={userId} />}
-      </Stack.Screen>
+      <Stack.Screen name="Dashboard" component={DashboardScreen} />
     </Stack.Navigator>
   );
 };
