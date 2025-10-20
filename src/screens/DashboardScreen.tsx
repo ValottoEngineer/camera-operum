@@ -219,6 +219,13 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               />
               
               <IconButton
+                iconName="chatbubbles"
+                onPress={() => navigation.navigate('Chat')}
+                color={theme.colors.neon.electric}
+                size="medium"
+              />
+              
+              <IconButton
                 iconName="search"
                 onPress={() => navigation.navigate('Search')}
                 color={theme.colors.neon.electric}

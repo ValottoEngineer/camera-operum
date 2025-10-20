@@ -4,12 +4,14 @@ import { DashboardScreen } from '../screens/DashboardScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { SimulatorScreen } from '../screens/SimulatorScreen';
 import { SearchScreen } from '../screens/SearchScreen';
+import { ChatScreen } from '../screens/ChatScreen';
 
 export type AppStackParamList = {
   Dashboard: undefined;
   Profile: undefined;
   Simulator: undefined;
   Search: undefined;
+  Chat: undefined;
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -26,6 +28,7 @@ export const AppStack: React.FC = () => {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Simulator" component={SimulatorScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>
   );
 };
