@@ -198,24 +198,64 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 </Text>
               )}
             </View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Profile')}
-              style={{
-                padding: theme.spacing.sm,
-                borderRadius: theme.borderRadius.md,
-                backgroundColor: theme.colors.neon.electric,
-              }}
-            >
-              <Text
+            <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Search')}
                 style={{
-                  color: theme.colors.surface,
-                  fontSize: theme.typography.sizes.sm,
-                  fontWeight: theme.typography.weights.medium,
+                  padding: theme.spacing.sm,
+                  borderRadius: theme.borderRadius.md,
+                  backgroundColor: theme.colors.neon.cyan,
                 }}
               >
-                Perfil
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={{
+                    color: theme.colors.surface,
+                    fontSize: theme.typography.sizes.sm,
+                    fontWeight: theme.typography.weights.medium,
+                  }}
+                >
+                  Buscar
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Simulator')}
+                style={{
+                  padding: theme.spacing.sm,
+                  borderRadius: theme.borderRadius.md,
+                  backgroundColor: theme.colors.neon.purple,
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme.colors.surface,
+                    fontSize: theme.typography.sizes.sm,
+                    fontWeight: theme.typography.weights.medium,
+                  }}
+                >
+                  Simulador
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Profile')}
+                style={{
+                  padding: theme.spacing.sm,
+                  borderRadius: theme.borderRadius.md,
+                  backgroundColor: theme.colors.neon.electric,
+                }}
+              >
+                <Text
+                  style={{
+                    color: theme.colors.surface,
+                    fontSize: theme.typography.sizes.sm,
+                    fontWeight: theme.typography.weights.medium,
+                  }}
+                >
+                  Perfil
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Loading state */}

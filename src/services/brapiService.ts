@@ -229,6 +229,77 @@ class BrapiService {
     }
   }
 
+  // Dados mockados para ações individuais (apenas as 4 ações gratuitas)
+  getMockStockQuotes(symbols?: string[]): StockQuote[] {
+    const mockStocks = {
+      ITUB4: {
+        symbol: 'ITUB4',
+        shortName: 'Itaú Unibanco',
+        longName: 'Itaú Unibanco Holding S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 28.45,
+        regularMarketDayHigh: 29.10,
+        regularMarketDayLow: 28.20,
+        regularMarketChange: 0.35,
+        regularMarketChangePercent: 1.25,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 280000000000,
+        regularMarketVolume: 45000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      PETR4: {
+        symbol: 'PETR4',
+        shortName: 'Petrobras',
+        longName: 'Petróleo Brasileiro S.A. - Petrobras',
+        currency: 'BRL',
+        regularMarketPrice: 35.20,
+        regularMarketDayHigh: 36.00,
+        regularMarketDayLow: 34.80,
+        regularMarketChange: 1.50,
+        regularMarketChangePercent: 4.45,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 450000000000,
+        regularMarketVolume: 85000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      VALE3: {
+        symbol: 'VALE3',
+        shortName: 'Vale',
+        longName: 'Vale S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 58.90,
+        regularMarketDayHigh: 60.20,
+        regularMarketDayLow: 58.10,
+        regularMarketChange: -0.80,
+        regularMarketChangePercent: -1.34,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 280000000000,
+        regularMarketVolume: 42000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      MGLU3: {
+        symbol: 'MGLU3',
+        shortName: 'Magazine Luiza',
+        longName: 'Magazine Luiza S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 12.45,
+        regularMarketDayHigh: 13.20,
+        regularMarketDayLow: 12.10,
+        regularMarketChange: 0.75,
+        regularMarketChangePercent: 6.42,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 85000000000,
+        regularMarketVolume: 25000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+    };
+
+    const symbolsToReturn = symbols || Object.keys(mockStocks);
+    return symbolsToReturn
+      .map(symbol => mockStocks[symbol as keyof typeof mockStocks])
+      .filter(Boolean);
+  }
+
   // Dados mockados para demonstração quando a API estiver indisponível (apenas as 4 ações gratuitas)
   getMockPortfolios(): Portfolio[] {
     const mockStocks = {
