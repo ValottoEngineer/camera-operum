@@ -10,6 +10,7 @@ import { Card } from '../components/Card';
 import { TextField } from '../components/TextField';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { SecondaryButton } from '../components/SecondaryButton';
+import { ConfirmPasswordModal } from '../components/ConfirmPasswordModal';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/auth';
 import { updateNameSchema, updatePasswordSchema, UpdateNameFormData, UpdatePasswordFormData } from '../validation/schemas';
@@ -23,10 +24,11 @@ interface Props {
 }
 
 export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, updateUserProfile, updateUserPassword, deleteAccount, logout, isLoading } = useAuth();
   const [isUpdatingName, setIsUpdatingName] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const {
     control: nameControl,
@@ -52,7 +54,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
   const onUpdateName = async (data: UpdateNameFormData) => {
     setIsUpdatingName(true);
     try {
-      const result = await authService.updateUserProfile(data.name);
+      const result = await updateUserProfile(data.name);
       
       if (result.success) {
         Toast.show({
@@ -82,7 +84,7 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
   const onUpdatePassword = async (data: UpdatePasswordFormData) => {
     setIsUpdatingPassword(true);
     try {
-      const result = await authService.updateUserPassword(data.currentPassword, data.newPassword);
+      const result = await updateUserPassword(data.currentPassword, data.newPassword);
       
       if (result.success) {
         Toast.show({
@@ -111,64 +113,34 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const onDeleteAccount = () => {
-    Alert.alert(
-      'Excluir Conta',
-      'Tem certeza que deseja excluir sua conta? Esta ação não pode ser desfeita.',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Excluir',
-          style: 'destructive',
-          onPress: () => {
-            Alert.prompt(
-              'Confirmar Exclusão',
-              'Digite sua senha atual para confirmar a exclusão da conta:',
-              [
-                {
-                  text: 'Cancelar',
-                  style: 'cancel',
-                },
-                {
-                  text: 'Excluir',
-                  style: 'destructive',
-                  onPress: async (password) => {
-                    if (password) {
-                      try {
-                        const result = await authService.deleteUserAccount(password);
-                        
-                        if (result.success) {
-                          Toast.show({
-                            type: 'success',
-                            text1: 'Conta excluída',
-                            text2: 'Sua conta foi excluída com sucesso.',
-                          });
-                        } else {
-                          Toast.show({
-                            type: 'error',
-                            text1: 'Erro ao excluir conta',
-                            text2: result.error || 'Tente novamente.',
-                          });
-                        }
-                      } catch (error) {
-                        Toast.show({
-                          type: 'error',
-                          text1: 'Erro ao excluir conta',
-                          text2: 'Tente novamente mais tarde.',
-                        });
-                      }
-                    }
-                  },
-                },
-              ],
-              'secure-text'
-            );
-          },
-        },
-      ]
-    );
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async (password: string) => {
+    try {
+      const result = await deleteAccount(password);
+      
+      if (result.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Conta excluída',
+          text2: 'Sua conta foi excluída com sucesso.',
+        });
+        setShowDeleteModal(false);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Erro ao excluir conta',
+          text2: result.error || 'Tente novamente.',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro ao excluir conta',
+        text2: 'Tente novamente mais tarde.',
+      });
+    }
   };
 
   const handleLogout = async () => {
@@ -460,6 +432,15 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <ConfirmPasswordModal
+        visible={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteConfirm}
+        loading={isLoading}
+        title="Excluir Conta"
+        message="Digite sua senha atual para confirmar a exclusão da conta. Esta ação é irreversível."
+      />
     </KeyboardAvoidingView>
   );
 };

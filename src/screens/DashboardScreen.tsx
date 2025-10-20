@@ -6,10 +6,10 @@ import Toast from 'react-native-toast-message';
 import { GradientContainer } from '../components/GradientContainer';
 import { Card } from '../components/Card';
 import { SecondaryButton } from '../components/SecondaryButton';
-import { StockCard } from '../components/StockCard';
+import { PortfolioCard } from '../components/PortfolioCard';
 import { useAuth } from '../context/AuthContext';
 import { brapiService } from '../services/brapiService';
-import { StockQuote } from '../types/brapi';
+import { Portfolio } from '../types/portfolio';
 import { theme } from '../styles/theme';
 import { AppStackParamList } from '../navigation/AppStack';
 
@@ -21,21 +21,36 @@ interface Props {
 
 export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const { currentUser, logout } = useAuth();
-  const [stocks, setStocks] = useState<StockQuote[]>([]);
+  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [usingMockData, setUsingMockData] = useState(false);
 
-  const loadStocks = useCallback(async () => {
+  const loadPortfolios = useCallback(async () => {
     try {
-      const stockData = await brapiService.getStockQuotes();
-      setStocks(stockData);
+      const portfolioData = await brapiService.getPortfolios();
+      setPortfolios(portfolioData);
+      setUsingMockData(false);
     } catch (error) {
-      console.error('Error loading stocks:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Erro ao carregar cotações',
-        text2: 'Tente novamente mais tarde.',
-      });
+      console.error('Error loading portfolios:', error);
+      
+      // Se a API falhar, tentar usar dados mockados
+      try {
+        const mockData = brapiService.getMockPortfolios();
+        setPortfolios(mockData);
+        setUsingMockData(true);
+        Toast.show({
+          type: 'info',
+          text1: 'Dados de demonstração',
+          text2: 'Usando dados simulados para demonstração.',
+        });
+      } catch (mockError) {
+        Toast.show({
+          type: 'error',
+          text1: 'Erro ao carregar carteiras',
+          text2: 'Tente novamente mais tarde.',
+        });
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -43,20 +58,19 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    loadStocks();
-  }, [loadStocks]);
+    loadPortfolios();
+  }, [loadPortfolios]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    loadStocks();
-  }, [loadStocks]);
+    loadPortfolios();
+  }, [loadPortfolios]);
 
   const handleLogout = async () => {
     await logout();
   };
 
-  const handleStockPress = (stock: StockQuote) => {
-    // Aqui você pode implementar navegação para detalhes da ação
+  const handleStockPress = (stock: any) => {
     Toast.show({
       type: 'info',
       text1: `${stock.symbol}`,
@@ -66,9 +80,9 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
 
   const renderLoadingSkeleton = () => (
     <View style={{ paddingHorizontal: theme.spacing.lg }}>
-      {[1, 2, 3, 4, 5].map((index) => (
-        <Card key={index} style={{ marginBottom: theme.spacing.sm }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      {[1, 2, 3].map((index) => (
+        <Card key={index} style={{ marginBottom: theme.spacing.md, padding: theme.spacing.lg }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing.md }}>
             <View style={{ flex: 1 }}>
               <View
                 style={{
@@ -162,15 +176,28 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
               marginBottom: theme.spacing.lg,
             }}
           >
-            <Text
-              style={{
-                fontSize: theme.typography.sizes['2xl'],
-                fontWeight: theme.typography.weights.bold,
-                color: theme.colors.neutral.primary,
-              }}
-            >
-              Cotações em Tempo Real
-            </Text>
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontSize: theme.typography.sizes['2xl'],
+                  fontWeight: theme.typography.weights.bold,
+                  color: theme.colors.neutral.primary,
+                }}
+              >
+                Suas Carteiras de Investimento
+              </Text>
+              {usingMockData && (
+                <Text
+                  style={{
+                    fontSize: theme.typography.sizes.sm,
+                    color: theme.colors.neon.electric,
+                    marginTop: theme.spacing.xs,
+                  }}
+                >
+                  📊 Dados de demonstração
+                </Text>
+              )}
+            </View>
             <TouchableOpacity
               onPress={() => navigation.navigate('Profile')}
               style={{
@@ -196,15 +223,15 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
             renderLoadingSkeleton()
           ) : (
             <View style={{ paddingHorizontal: theme.spacing.lg }}>
-              {stocks.map((stock) => (
-                <StockCard
-                  key={stock.symbol}
-                  stock={stock}
-                  onPress={() => handleStockPress(stock)}
+              {portfolios.map((portfolio) => (
+                <PortfolioCard
+                  key={portfolio.id}
+                  portfolio={portfolio}
+                  onStockPress={handleStockPress}
                 />
               ))}
 
-              {stocks.length === 0 && (
+              {portfolios.length === 0 && (
                 <Card>
                   <Text
                     style={{
@@ -215,7 +242,7 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                       marginBottom: theme.spacing.sm,
                     }}
                   >
-                    Nenhuma cotação disponível
+                    Nenhuma carteira disponível
                   </Text>
                   <Text
                     style={{
