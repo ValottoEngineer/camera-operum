@@ -3,6 +3,10 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   updateProfile,
+  updatePassword,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
   User as FirebaseUser
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -105,6 +109,101 @@ class AuthService {
 
   isAuthenticated(): boolean {
     return auth.currentUser !== null;
+  }
+
+  // Atualizar nome do usuário
+  async updateUserProfile(name: string): Promise<AuthResponse> {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        return {
+          success: false,
+          error: 'Usuário não autenticado.',
+        };
+      }
+
+      await updateProfile(user, {
+        displayName: name,
+      });
+
+      return {
+        success: true,
+        user: mapFirebaseUser(user),
+      };
+    } catch (error: any) {
+      const errorCode = getFirebaseErrorCode(error);
+      const errorMessage = getFirebaseErrorMessage(errorCode);
+      
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  // Atualizar senha do usuário
+  async updateUserPassword(currentPassword: string, newPassword: string): Promise<AuthResponse> {
+    try {
+      const user = auth.currentUser;
+      if (!user || !user.email) {
+        return {
+          success: false,
+          error: 'Usuário não autenticado.',
+        };
+      }
+
+      // Reautenticar usuário antes de alterar senha
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential);
+
+      // Atualizar senha
+      await updatePassword(user, newPassword);
+
+      return {
+        success: true,
+        user: mapFirebaseUser(user),
+      };
+    } catch (error: any) {
+      const errorCode = getFirebaseErrorCode(error);
+      const errorMessage = getFirebaseErrorMessage(errorCode);
+      
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  // Excluir conta do usuário
+  async deleteUserAccount(currentPassword: string): Promise<AuthResponse> {
+    try {
+      const user = auth.currentUser;
+      if (!user || !user.email) {
+        return {
+          success: false,
+          error: 'Usuário não autenticado.',
+        };
+      }
+
+      // Reautenticar usuário antes de excluir conta
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential);
+
+      // Excluir conta
+      await deleteUser(user);
+
+      return {
+        success: true,
+      };
+    } catch (error: any) {
+      const errorCode = getFirebaseErrorCode(error);
+      const errorMessage = getFirebaseErrorMessage(errorCode);
+      
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
   }
 
   // Listener para mudanças de estado de autenticação
