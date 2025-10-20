@@ -41,10 +41,9 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
       setFilteredStocks(stockData);
     } catch (error) {
       console.error('Error loading stocks:', error);
-      // Usar dados mockados se a API falhar
-      const mockStocks = brapiService.getMockStockQuotes();
-      setStocks(mockStocks);
-      setFilteredStocks(mockStocks);
+      // O brapiService já retorna dados mockados automaticamente em caso de erro
+      setStocks([]);
+      setFilteredStocks([]);
     } finally {
       setLoading(false);
       setRefreshing(false);

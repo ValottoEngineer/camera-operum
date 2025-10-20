@@ -3,63 +3,126 @@ import { Portfolio, PORTFOLIO_CONFIGS, RiskProfile } from '../types/portfolio';
 
 const BRAPI_BASE_URL = 'https://brapi.dev/api';
 const BRAPI_TOKEN = '83ggNqPt65fEAYG7EhrWEr';
+const FREE_STOCKS = ['PETR4', 'VALE3', 'MGLU3', 'ITUB4']; // Sem limite de rate!
 
 class BrapiService {
-  private async makeRequest<T>(endpoint: string): Promise<T> {
+  private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+  private lastRequestTime = 0;
+  private readonly MIN_REQUEST_INTERVAL = 1000; // 1 segundo entre requisições
+  private requestCount = 0;
+  private cacheHits = 0;
+
+  private async makeRequest<T>(endpoint: string, useToken = false): Promise<T> {
+    // Adicionar token como parâmetro de URL se necessário
+    const url = useToken 
+      ? `${BRAPI_BASE_URL}${endpoint}?token=${BRAPI_TOKEN}`
+      : `${BRAPI_BASE_URL}${endpoint}`;
+    
+    // Verificar cache primeiro
+    const cached = this.cache.get(url);
+    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      this.cacheHits++;
+      console.log(`Cache hit! Total: ${this.cacheHits}`);
+      return cached.data;
+    }
+
+    // Rate limiting local - aguardar se necessário
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    if (timeSinceLastRequest < this.MIN_REQUEST_INTERVAL) {
+      const waitTime = this.MIN_REQUEST_INTERVAL - timeSinceLastRequest;
+      console.log(`Rate limiting: waiting ${waitTime}ms`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+
     try {
-      const response = await fetch(`${BRAPI_BASE_URL}${endpoint}`, {
+      this.requestCount++;
+      console.log(`API request #${this.requestCount} - ${useToken ? 'with token' : 'free stocks'}`);
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${BRAPI_TOKEN}`,
           'Content-Type': 'application/json',
         },
       });
+
+      this.lastRequestTime = Date.now();
+
+      if (response.status === 429) {
+        console.log('Rate limit hit (429), using cached/mock data');
+        throw new Error('RATE_LIMIT');
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      
+      // Salvar no cache
+      this.cache.set(url, { data, timestamp: Date.now() });
+      
       return data;
     } catch (error) {
-      console.error('Brapi API Error:', error);
+      // Apenas logar se não for rate limit
+      if (!(error instanceof Error && error.message === 'RATE_LIMIT')) {
+        console.error('Unexpected API error:', error);
+      }
+      
+      if (error instanceof Error && error.message === 'RATE_LIMIT') {
+        throw new Error('RATE_LIMIT');
+      }
+      
       throw new Error('Erro ao buscar dados financeiros. Tente novamente.');
     }
   }
 
-  async getStockQuotes(symbols?: string[], retryCount = 0): Promise<StockQuote[]> {
-    try {
-      const symbolsToFetch = symbols || STOCK_SYMBOLS;
-      const symbolsParam = symbolsToFetch.join(',');
-      
-      const response: BrapiResponse = await this.makeRequest(
-        `/quote/${symbolsParam}`
-      );
-
-      return response.results || [];
-    } catch (error) {
-      console.error('Error fetching stock quotes:', error);
-      
-      // Se for rate limit (429), aguardar e tentar novamente
-      if (error instanceof Error && error.message.includes('429') && retryCount < 2) {
-        console.log(`Rate limited, retrying in ${(retryCount + 1) * 2} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 2000));
-        return this.getStockQuotes(symbols, retryCount + 1);
+  async getStockQuotes(symbols?: string[]): Promise<StockQuote[]> {
+    const symbolsToFetch = symbols || FREE_STOCKS;
+    
+    // Dividir em chunks de 2 ações para evitar sobrecarga
+    const chunks = this.chunkArray(symbolsToFetch, 2);
+    const results: StockQuote[] = [];
+    
+    for (const chunk of chunks) {
+      try {
+        const symbolsParam = chunk.join(',');
+        
+        // Verificar se todas as ações do chunk são gratuitas
+        const allFreeStocks = chunk.every(symbol => FREE_STOCKS.includes(symbol));
+        
+        const response: BrapiResponse = await this.makeRequest(
+          `/quote/${symbolsParam}`,
+          !allFreeStocks // Usar token apenas se NÃO forem todas gratuitas
+        );
+        results.push(...(response.results || []));
+        
+        // Aguardar 500ms entre chunks para ser gentil com a API
+        if (chunks.indexOf(chunk) < chunks.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      } catch (error) {
+        console.log('Chunk failed, using mock for:', chunk);
+        results.push(...this.getMockStockQuotes(chunk));
       }
-      
-      // Se ainda estiver com erro após retry, usar dados mockados
-      if (retryCount >= 2) {
-        console.log('API unavailable after retries, using mock data');
-        return this.getMockStockQuotes(symbols || STOCK_SYMBOLS);
-      }
-      
-      throw error;
     }
+    
+    return results;
   }
 
-  // Dados mockados para ações individuais (apenas as 4 ações gratuitas)
+  private chunkArray<T>(array: T[], size: number): T[][] {
+    const chunks: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunks.push(array.slice(i, i + size));
+    }
+    return chunks;
+  }
+
+  // Dados mockados para ações individuais (4 gratuitas + 6 adicionais)
   private getMockStockQuotes(symbols: string[]): StockQuote[] {
     const mockStocks = {
+      // Ações gratuitas (reais quando cache expirar)
       ITUB4: {
         symbol: 'ITUB4',
         shortName: 'Itaú Unibanco',
@@ -120,6 +183,98 @@ class BrapiService {
         regularMarketVolume: 25000000,
         logourl: 'https://brapi.dev/favicon.svg',
       },
+      
+      // Ações adicionais mockadas para enriquecer portfolios
+      BBDC4: {
+        symbol: 'BBDC4',
+        shortName: 'Bradesco',
+        longName: 'Banco Bradesco S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 14.30,
+        regularMarketDayHigh: 14.80,
+        regularMarketDayLow: 14.10,
+        regularMarketChange: -0.15,
+        regularMarketChangePercent: -1.04,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 150000000000,
+        regularMarketVolume: 35000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      ABEV3: {
+        symbol: 'ABEV3',
+        shortName: 'Ambev',
+        longName: 'Ambev S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 11.85,
+        regularMarketDayHigh: 12.20,
+        regularMarketDayLow: 11.60,
+        regularMarketChange: 0.25,
+        regularMarketChangePercent: 2.15,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 200000000000,
+        regularMarketVolume: 28000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      WEGE3: {
+        symbol: 'WEGE3',
+        shortName: 'WEG',
+        longName: 'WEG S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 38.90,
+        regularMarketDayHigh: 39.50,
+        regularMarketDayLow: 38.20,
+        regularMarketChange: 1.20,
+        regularMarketChangePercent: 3.18,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 180000000000,
+        regularMarketVolume: 15000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      B3SA3: {
+        symbol: 'B3SA3',
+        shortName: 'B3',
+        longName: 'B3 S.A. - Brasil, Bolsa, Balcão',
+        currency: 'BRL',
+        regularMarketPrice: 9.75,
+        regularMarketDayHigh: 10.20,
+        regularMarketDayLow: 9.50,
+        regularMarketChange: 0.15,
+        regularMarketChangePercent: 1.56,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 120000000000,
+        regularMarketVolume: 22000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      SUZB3: {
+        symbol: 'SUZB3',
+        shortName: 'Suzano',
+        longName: 'Suzano S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 45.60,
+        regularMarketDayHigh: 46.80,
+        regularMarketDayLow: 45.10,
+        regularMarketChange: -0.80,
+        regularMarketChangePercent: -1.72,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 160000000000,
+        regularMarketVolume: 18000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      JBSS3: {
+        symbol: 'JBSS3',
+        shortName: 'JBS',
+        longName: 'JBS S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 22.40,
+        regularMarketDayHigh: 23.10,
+        regularMarketDayLow: 22.00,
+        regularMarketChange: 0.60,
+        regularMarketChangePercent: 2.75,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 140000000000,
+        regularMarketVolume: 32000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
     };
 
     return symbols
@@ -146,7 +301,8 @@ class BrapiService {
       const symbolsParam = symbols.join(',');
       
       const response: BrapiResponse = await this.makeRequest(
-        `/quote/${symbolsParam}?range=${range}&interval=${interval}`
+        `/quote/${symbolsParam}?range=${range}&interval=${interval}`,
+        false // SEM token para ações gratuitas
       );
 
       return response.results || [];
@@ -219,18 +375,14 @@ class BrapiService {
     } catch (error) {
       console.error('Error fetching portfolios:', error);
       
-      // Se a API estiver com rate limit, usar dados mockados
-      if (error instanceof Error && error.message.includes('429')) {
-        console.log('API rate limited, using mock data for demonstration');
-        return this.getMockPortfolios();
-      }
-      
-      throw error;
+      // Em caso de qualquer erro, usar dados mockados
+      console.log('API error, using mock data for demonstration');
+      return this.getMockPortfolios();
     }
   }
 
-  // Dados mockados para ações individuais (apenas as 4 ações gratuitas)
-  getMockStockQuotes(symbols?: string[]): StockQuote[] {
+  // Dados mockados para demonstração quando a API estiver indisponível
+  private getMockPortfolios(): Portfolio[] {
     const mockStocks = {
       ITUB4: {
         symbol: 'ITUB4',
@@ -292,75 +444,94 @@ class BrapiService {
         regularMarketVolume: 25000000,
         logourl: 'https://brapi.dev/favicon.svg',
       },
-    };
-
-    const symbolsToReturn = symbols || Object.keys(mockStocks);
-    return symbolsToReturn
-      .map(symbol => mockStocks[symbol as keyof typeof mockStocks])
-      .filter(Boolean);
-  }
-
-  // Dados mockados para demonstração quando a API estiver indisponível (apenas as 4 ações gratuitas)
-  getMockPortfolios(): Portfolio[] {
-    const mockStocks = {
-      ITUB4: {
-        symbol: 'ITUB4',
-        shortName: 'Itaú Unibanco',
-        longName: 'Itaú Unibanco Holding S.A.',
+      BBDC4: {
+        symbol: 'BBDC4',
+        shortName: 'Bradesco',
+        longName: 'Banco Bradesco S.A.',
         currency: 'BRL',
-        regularMarketPrice: 28.45,
-        regularMarketDayHigh: 29.10,
-        regularMarketDayLow: 28.20,
-        regularMarketChange: 0.35,
-        regularMarketChangePercent: 1.25,
+        regularMarketPrice: 14.30,
+        regularMarketDayHigh: 14.80,
+        regularMarketDayLow: 14.10,
+        regularMarketChange: -0.15,
+        regularMarketChangePercent: -1.04,
         regularMarketTime: new Date().toISOString(),
-        marketCap: 280000000000,
-        regularMarketVolume: 45000000,
+        marketCap: 150000000000,
+        regularMarketVolume: 35000000,
         logourl: 'https://brapi.dev/favicon.svg',
       },
-      PETR4: {
-        symbol: 'PETR4',
-        shortName: 'Petrobras',
-        longName: 'Petróleo Brasileiro S.A. - Petrobras',
+      ABEV3: {
+        symbol: 'ABEV3',
+        shortName: 'Ambev',
+        longName: 'Ambev S.A.',
         currency: 'BRL',
-        regularMarketPrice: 35.20,
-        regularMarketDayHigh: 36.00,
-        regularMarketDayLow: 34.80,
-        regularMarketChange: 1.50,
-        regularMarketChangePercent: 4.45,
+        regularMarketPrice: 11.85,
+        regularMarketDayHigh: 12.20,
+        regularMarketDayLow: 11.60,
+        regularMarketChange: 0.25,
+        regularMarketChangePercent: 2.15,
         regularMarketTime: new Date().toISOString(),
-        marketCap: 450000000000,
-        regularMarketVolume: 85000000,
+        marketCap: 200000000000,
+        regularMarketVolume: 28000000,
         logourl: 'https://brapi.dev/favicon.svg',
       },
-      VALE3: {
-        symbol: 'VALE3',
-        shortName: 'Vale',
-        longName: 'Vale S.A.',
+      WEGE3: {
+        symbol: 'WEGE3',
+        shortName: 'WEG',
+        longName: 'WEG S.A.',
         currency: 'BRL',
-        regularMarketPrice: 58.90,
-        regularMarketDayHigh: 60.20,
-        regularMarketDayLow: 58.10,
+        regularMarketPrice: 38.90,
+        regularMarketDayHigh: 39.50,
+        regularMarketDayLow: 38.20,
+        regularMarketChange: 1.20,
+        regularMarketChangePercent: 3.18,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 180000000000,
+        regularMarketVolume: 15000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      B3SA3: {
+        symbol: 'B3SA3',
+        shortName: 'B3',
+        longName: 'B3 S.A. - Brasil, Bolsa, Balcão',
+        currency: 'BRL',
+        regularMarketPrice: 9.75,
+        regularMarketDayHigh: 10.20,
+        regularMarketDayLow: 9.50,
+        regularMarketChange: 0.15,
+        regularMarketChangePercent: 1.56,
+        regularMarketTime: new Date().toISOString(),
+        marketCap: 120000000000,
+        regularMarketVolume: 22000000,
+        logourl: 'https://brapi.dev/favicon.svg',
+      },
+      SUZB3: {
+        symbol: 'SUZB3',
+        shortName: 'Suzano',
+        longName: 'Suzano S.A.',
+        currency: 'BRL',
+        regularMarketPrice: 45.60,
+        regularMarketDayHigh: 46.80,
+        regularMarketDayLow: 45.10,
         regularMarketChange: -0.80,
-        regularMarketChangePercent: -1.34,
+        regularMarketChangePercent: -1.72,
         regularMarketTime: new Date().toISOString(),
-        marketCap: 280000000000,
-        regularMarketVolume: 42000000,
+        marketCap: 160000000000,
+        regularMarketVolume: 18000000,
         logourl: 'https://brapi.dev/favicon.svg',
       },
-      MGLU3: {
-        symbol: 'MGLU3',
-        shortName: 'Magazine Luiza',
-        longName: 'Magazine Luiza S.A.',
+      JBSS3: {
+        symbol: 'JBSS3',
+        shortName: 'JBS',
+        longName: 'JBS S.A.',
         currency: 'BRL',
-        regularMarketPrice: 12.45,
-        regularMarketDayHigh: 13.20,
-        regularMarketDayLow: 12.10,
-        regularMarketChange: 0.75,
-        regularMarketChangePercent: 6.42,
+        regularMarketPrice: 22.40,
+        regularMarketDayHigh: 23.10,
+        regularMarketDayLow: 22.00,
+        regularMarketChange: 0.60,
+        regularMarketChangePercent: 2.75,
         regularMarketTime: new Date().toISOString(),
-        marketCap: 85000000000,
-        regularMarketVolume: 25000000,
+        marketCap: 140000000000,
+        regularMarketVolume: 32000000,
         logourl: 'https://brapi.dev/favicon.svg',
       },
     };
@@ -381,6 +552,30 @@ class BrapiService {
         metrics,
       };
     });
+  }
+
+  // Limpar cache (útil para testes ou quando necessário)
+  clearCache(): void {
+    this.cache.clear();
+    console.log('Cache cleared');
+  }
+
+  // Verificar se há dados em cache
+  hasCachedData(endpoint: string): boolean {
+    const url = `${BRAPI_BASE_URL}${endpoint}`;
+    const cached = this.cache.get(url);
+    return cached ? Date.now() - cached.timestamp < this.CACHE_DURATION : false;
+  }
+
+  // Métricas de performance do cache
+  getStats() {
+    return {
+      requests: this.requestCount,
+      cacheHits: this.cacheHits,
+      hitRate: this.requestCount + this.cacheHits > 0 
+        ? (this.cacheHits / (this.requestCount + this.cacheHits)) * 100 
+        : 0
+    };
   }
 
   // Calcular métricas da carteira

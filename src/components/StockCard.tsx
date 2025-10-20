@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ViewStyle } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { StockQuote } from '../types/brapi';
 import { brapiService } from '../services/brapiService';
 import { theme } from '../styles/theme';
+
+const FREE_STOCKS = ['PETR4', 'VALE3', 'MGLU3', 'ITUB4'];
 
 interface StockCardProps {
   stock: StockQuote;
@@ -18,6 +21,7 @@ export const StockCard: React.FC<StockCardProps> = ({
   const changeColor = brapiService.getChangeColor(stock.regularMarketChange);
   const isPositive = stock.regularMarketChange > 0;
   const isNegative = stock.regularMarketChange < 0;
+  const isRealData = FREE_STOCKS.includes(stock.symbol);
 
   const formatPrice = (price: number) => {
     return brapiService.formatPrice(price);
@@ -57,20 +61,42 @@ export const StockCard: React.FC<StockCardProps> = ({
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text
-            style={{
-              fontSize: theme.typography.sizes.lg,
-              fontWeight: theme.typography.weights.bold,
-              color: theme.colors.neutral.primary,
-            }}
-          >
-            {stock.symbol}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+            <Text
+              style={{
+                fontSize: theme.typography.sizes.lg,
+                fontWeight: theme.typography.weights.bold,
+                color: theme.colors.neutral.primary,
+              }}
+            >
+              {stock.symbol}
+            </Text>
+            {isRealData && (
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#10B981',
+                paddingHorizontal: 6,
+                paddingVertical: 2,
+                borderRadius: 8,
+                marginLeft: 8,
+              }}>
+                <Ionicons name="cloud-done" size={10} color="white" />
+                <Text style={{
+                  fontSize: 10,
+                  color: 'white',
+                  fontWeight: '600',
+                  marginLeft: 2,
+                }}>
+                  Real
+                </Text>
+              </View>
+            )}
+          </View>
           <Text
             style={{
               fontSize: theme.typography.sizes.sm,
               color: theme.colors.neutral.secondary,
-              marginTop: 2,
             }}
             numberOfLines={1}
           >

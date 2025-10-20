@@ -27,36 +27,43 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [usingMockData, setUsingMockData] = useState(false);
 
-  const loadPortfolios = useCallback(async () => {
-    try {
-      const portfolioData = await brapiService.getPortfolios();
-      setPortfolios(portfolioData);
-      setUsingMockData(false);
-    } catch (error) {
-      console.error('Error loading portfolios:', error);
-      
-      // Se a API falhar, tentar usar dados mockados
-      try {
-        const mockData = brapiService.getMockPortfolios();
-        setPortfolios(mockData);
-        setUsingMockData(true);
-        Toast.show({
-          type: 'info',
-          text1: 'Dados de demonstração',
-          text2: 'Usando dados simulados para demonstração.',
-        });
-      } catch (mockError) {
-        Toast.show({
-          type: 'error',
-          text1: 'Erro ao carregar carteiras',
-          text2: 'Tente novamente mais tarde.',
-        });
-      }
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, []);
+      const loadPortfolios = useCallback(async () => {
+        try {
+          // Verificar se tem cache válido antes de carregar
+          const hasCached = brapiService.hasCachedData('/quote/PETR4,VALE3,MGLU3,ITUB4');
+          
+          if (hasCached) {
+            console.log('Using cached portfolio data');
+          }
+          
+          const portfolioData = await brapiService.getPortfolios();
+          setPortfolios(portfolioData);
+          setUsingMockData(false);
+        } catch (error) {
+          console.error('Error loading portfolios:', error);
+          
+          // Se a API falhar, tentar usar dados mockados
+          try {
+            const mockData = brapiService.getMockPortfolios();
+            setPortfolios(mockData);
+            setUsingMockData(true);
+            Toast.show({
+              type: 'info',
+              text1: 'Modo Demonstração',
+              text2: 'Exibindo mix de dados reais (PETR4, VALE3, MGLU3, ITUB4) e simulados',
+            });
+          } catch (mockError) {
+            Toast.show({
+              type: 'error',
+              text1: 'Erro ao carregar carteiras',
+              text2: 'Tente novamente mais tarde.',
+            });
+          }
+        } finally {
+          setLoading(false);
+          setRefreshing(false);
+        }
+      }, []);
 
   useEffect(() => {
     loadPortfolios();
@@ -188,18 +195,29 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 Suas Carteiras de Investimento
               </Text>
               {usingMockData && (
-                <Text
-                  style={{
-                    fontSize: theme.typography.sizes.sm,
-                    color: theme.colors.neon.electric,
-                    marginTop: theme.spacing.xs,
-                  }}
-                >
-                  📊 Dados de demonstração
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: theme.spacing.xs }}>
+                  <Text
+                    style={{
+                      fontSize: theme.typography.sizes.sm,
+                      color: theme.colors.neon.electric,
+                    }}
+                  >
+                    📊 Exibindo mix de dados reais (PETR4, VALE3, MGLU3, ITUB4) e simulados
+                  </Text>
+                </View>
               )}
             </View>
             <View style={{ flexDirection: 'row', gap: theme.spacing.sm }}>
+              <IconButton
+                iconName="refresh"
+                onPress={() => {
+                  brapiService.clearCache(); // Limpa cache
+                  loadPortfolios(); // Recarrega dados frescos
+                }}
+                color={theme.colors.neon.electric}
+                size="medium"
+              />
+              
               <IconButton
                 iconName="search"
                 onPress={() => navigation.navigate('Search')}

@@ -27,7 +27,7 @@ export const PORTFOLIO_CONFIGS = {
     description: 'Preservação de capital com baixo risco',
     objective: 'Foco em dividendos e estabilidade',
     color: '#2196F3', // Azul
-    symbols: ['ITUB4'], // Itaú - Banco estável com dividendos
+    symbols: ['ITUB4', 'BBDC4'], // 1 real + 1 mock - Bancos estáveis
   },
   moderado: {
     id: 'moderado',
@@ -35,7 +35,7 @@ export const PORTFOLIO_CONFIGS = {
     description: 'Crescimento equilibrado com risco moderado',
     objective: 'Crescimento sustentável e valorização',
     color: '#9C27B0', // Roxo
-    symbols: ['PETR4', 'VALE3'], // Petrobras e Vale - Commodities sólidas
+    symbols: ['PETR4', 'VALE3', 'ABEV3'], // 2 reais + 1 mock - Commodities + Consumo
   },
   arrojado: {
     id: 'arrojado',
@@ -43,7 +43,7 @@ export const PORTFOLIO_CONFIGS = {
     description: 'Alto crescimento com maior risco',
     objective: 'Máxima valorização e crescimento rápido',
     color: '#E91E63', // Rosa
-    symbols: ['MGLU3'], // Magazine Luiza - Varejo/tech com alto crescimento
+    symbols: ['MGLU3', 'WEGE3', 'B3SA3'], // 1 real + 2 mocks - Tech/Varejo/Financeiro
   },
 } as const;
 
