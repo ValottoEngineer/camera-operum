@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, authMock } from '../services/authMock';
+import { User, authService } from '../services/auth';
 
 interface AuthContextData {
   currentUser: User | null;
@@ -20,16 +20,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already authenticated
-    const user = authMock.getCurrentUser();
-    setCurrentUser(user);
-    setIsLoading(false);
+    // Listener para mudanças de estado de autenticação
+    const unsubscribe = authService.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+      setIsLoading(false);
+    });
+
+    // Cleanup do listener
+    return () => unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await authMock.signIn({ email, password });
+      const response = await authService.signIn({ email, password });
       
       if (response.success && response.user) {
         setCurrentUser(response.user);
@@ -47,9 +51,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (name: string, email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await authMock.signUp({ name, email, password });
+      const response = await authService.signUp({ name, email, password });
       
-      if (response.success) {
+      if (response.success && response.user) {
+        setCurrentUser(response.user);
         return { success: true };
       } else {
         return { success: false, error: response.error };
@@ -64,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await authMock.signOut();
+      await authService.signOut();
       setCurrentUser(null);
     } catch (error) {
       console.error('Logout error:', error);

@@ -18,14 +18,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: 'com.operum.mobile'
+    bundleIdentifier: 'com.company.operumappapple'
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#F2F2F2'
     },
-    package: 'com.operum.mobile'
+    package: 'com.company.operumappandroid'
   },
   web: {
     favicon: './assets/favicon.png'
