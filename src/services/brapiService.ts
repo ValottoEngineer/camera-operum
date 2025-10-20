@@ -57,7 +57,7 @@ class BrapiService {
     }
   }
 
-  // Dados mockados para ações individuais
+  // Dados mockados para ações individuais (apenas as 4 ações gratuitas)
   private getMockStockQuotes(symbols: string[]): StockQuote[] {
     const mockStocks = {
       ITUB4: {
@@ -73,22 +73,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 280000000000,
         regularMarketVolume: 45000000,
-        logourl: 'https://logo.clearbit.com/itau.com.br',
-      },
-      BBDC4: {
-        symbol: 'BBDC4',
-        shortName: 'Bradesco',
-        longName: 'Banco Bradesco S.A.',
-        currency: 'BRL',
-        regularMarketPrice: 22.80,
-        regularMarketDayHigh: 23.15,
-        regularMarketDayLow: 22.50,
-        regularMarketChange: -0.20,
-        regularMarketChangePercent: -0.87,
-        regularMarketTime: new Date().toISOString(),
-        marketCap: 220000000000,
-        regularMarketVolume: 38000000,
-        logourl: 'https://logo.clearbit.com/bradesco.com.br',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
       PETR4: {
         symbol: 'PETR4',
@@ -103,7 +88,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 450000000000,
         regularMarketVolume: 85000000,
-        logourl: 'https://logo.clearbit.com/petrobras.com.br',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
       VALE3: {
         symbol: 'VALE3',
@@ -118,7 +103,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 280000000000,
         regularMarketVolume: 42000000,
-        logourl: 'https://logo.clearbit.com/vale.com',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
       MGLU3: {
         symbol: 'MGLU3',
@@ -133,22 +118,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 85000000000,
         regularMarketVolume: 25000000,
-        logourl: 'https://logo.clearbit.com/magazineluiza.com.br',
-      },
-      WEGE3: {
-        symbol: 'WEGE3',
-        shortName: 'WEG',
-        longName: 'WEG S.A.',
-        currency: 'BRL',
-        regularMarketPrice: 42.80,
-        regularMarketDayHigh: 43.50,
-        regularMarketDayLow: 42.20,
-        regularMarketChange: 1.20,
-        regularMarketChangePercent: 2.88,
-        regularMarketTime: new Date().toISOString(),
-        marketCap: 180000000000,
-        regularMarketVolume: 15000000,
-        logourl: 'https://logo.clearbit.com/weg.com',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
     };
 
@@ -259,7 +229,7 @@ class BrapiService {
     }
   }
 
-  // Dados mockados para demonstração quando a API estiver indisponível
+  // Dados mockados para demonstração quando a API estiver indisponível (apenas as 4 ações gratuitas)
   getMockPortfolios(): Portfolio[] {
     const mockStocks = {
       ITUB4: {
@@ -275,22 +245,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 280000000000,
         regularMarketVolume: 45000000,
-        logourl: 'https://logo.clearbit.com/itau.com.br',
-      },
-      BBDC4: {
-        symbol: 'BBDC4',
-        shortName: 'Bradesco',
-        longName: 'Banco Bradesco S.A.',
-        currency: 'BRL',
-        regularMarketPrice: 22.80,
-        regularMarketDayHigh: 23.15,
-        regularMarketDayLow: 22.50,
-        regularMarketChange: -0.20,
-        regularMarketChangePercent: -0.87,
-        regularMarketTime: new Date().toISOString(),
-        marketCap: 220000000000,
-        regularMarketVolume: 38000000,
-        logourl: 'https://logo.clearbit.com/bradesco.com.br',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
       PETR4: {
         symbol: 'PETR4',
@@ -305,7 +260,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 450000000000,
         regularMarketVolume: 85000000,
-        logourl: 'https://logo.clearbit.com/petrobras.com.br',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
       VALE3: {
         symbol: 'VALE3',
@@ -320,7 +275,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 280000000000,
         regularMarketVolume: 42000000,
-        logourl: 'https://logo.clearbit.com/vale.com',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
       MGLU3: {
         symbol: 'MGLU3',
@@ -335,22 +290,7 @@ class BrapiService {
         regularMarketTime: new Date().toISOString(),
         marketCap: 85000000000,
         regularMarketVolume: 25000000,
-        logourl: 'https://logo.clearbit.com/magazineluiza.com.br',
-      },
-      WEGE3: {
-        symbol: 'WEGE3',
-        shortName: 'WEG',
-        longName: 'WEG S.A.',
-        currency: 'BRL',
-        regularMarketPrice: 42.80,
-        regularMarketDayHigh: 43.50,
-        regularMarketDayLow: 42.20,
-        regularMarketChange: 1.20,
-        regularMarketChangePercent: 2.88,
-        regularMarketTime: new Date().toISOString(),
-        marketCap: 180000000000,
-        regularMarketVolume: 15000000,
-        logourl: 'https://logo.clearbit.com/weg.com',
+        logourl: 'https://brapi.dev/favicon.svg',
       },
     };
 
