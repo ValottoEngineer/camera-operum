@@ -1,61 +1,43 @@
 import React from 'react';
-import { TouchableOpacity, ViewStyle, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from '../styles/theme';
 
 interface IconButtonProps {
   iconName: keyof typeof Ionicons.glyphMap;
   onPress: () => void;
-  size?: 'small' | 'medium' | 'large';
   color?: string;
+  size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
-  style?: ViewStyle;
 }
-
-const iconSizes = {
-  small: 20,
-  medium: 24,
-  large: 32,
-};
 
 export const IconButton: React.FC<IconButtonProps> = ({
   iconName,
   onPress,
+  color = '#6402FF',
   size = 'medium',
-  color = theme.colors.neon.ion,
   disabled = false,
-  style,
 }) => {
+  const sizeMap = {
+    small: 20,
+    medium: 24,
+    large: 28,
+  };
+
   return (
     <TouchableOpacity
-      style={[
-        styles.container,
-        { width: 44, height: 44 },
-        disabled && styles.disabled,
-        style,
-      ]}
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.7}
-      accessibilityRole="button"
+      activeOpacity={0.6}
+      style={{
+        width: 44,
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: disabled ? 0.5 : 1,
+      }}
     >
-      <Ionicons
-        name={iconName}
-        size={iconSizes[size]}
-        color={disabled ? theme.colors.neutral.secondary : color}
-      />
+      <Ionicons name={iconName} size={sizeMap[size]} color={color} />
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 22,
-    backgroundColor: 'transparent',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-});

@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { GradientContainer } from '../components/GradientContainer';
+import { Header } from '../components/Header';
 import { SimulatorForm } from '../components/SimulatorForm';
 import { SimulatorResults } from '../components/SimulatorResults';
-import { BackButton } from '../components/BackButton';
 import { IconButton } from '../components/IconButton';
 import { simulatorService } from '../services/simulatorService';
 import { theme } from '../styles/theme';
@@ -55,47 +54,18 @@ export const SimulatorScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <GradientContainer height={200}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: theme.spacing.md,
-          }}
-        >
-          <BackButton onPress={() => navigation.goBack()} color={theme.colors.surface} />
-          
+      <Header
+        title="Simulador de Investimentos"
+        onBackPress={() => navigation.goBack()}
+        rightComponent={
           <IconButton
             iconName="refresh"
             onPress={handleNewSimulation}
-            color={theme.colors.surface}
+            color="#FFFFFF"
             size="medium"
           />
-        </View>
-
-        <Text
-          style={{
-            fontSize: theme.typography.sizes['3xl'],
-            fontWeight: theme.typography.weights.bold,
-            color: theme.colors.surface,
-            textAlign: 'center',
-            marginBottom: theme.spacing.sm,
-          }}
-        >
-          Simulador de Investimentos
-        </Text>
-        <Text
-          style={{
-            fontSize: theme.typography.sizes.lg,
-            fontWeight: theme.typography.weights.medium,
-            color: theme.colors.surface,
-            textAlign: 'center',
-          }}
-        >
-          Projete seus ganhos futuros
-        </Text>
-      </GradientContainer>
+        }
+      />
 
       <View style={{ flex: 1 }}>
         {!showResults ? (

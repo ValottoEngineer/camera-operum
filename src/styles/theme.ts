@@ -1,5 +1,5 @@
 export const colors = {
-  // Futuristic Neon Palette - Operum
+  // Paleta Futurista Neon
   neon: {
     pink: '#EE0BFF',      // Rosa Futurista
     purple: '#9C0AE8',    // Lilás Neon
@@ -8,25 +8,21 @@ export const colors = {
     future: '#0B30FF',    // Azul Futuro
   },
   
-  // Neutral Palette - Minimalismo
+  // Paleta Neutra
   neutral: {
-    light: '#F2F2F2',     // Fundo claro
-    card: '#D9D9D9',      // Cartões/inputs
-    secondary: '#8C8C8C', // Texto secundário
-    primary: '#404040',   // Texto primário
-    border: '#D9D9D9',    // Bordas neutras
-    dark: '#595959',      // Bordas/ícones neutros
+    background: '#F2F2F2',
+    card: '#D9D9D9',
+    primary: '#404040',
+    secondary: '#8C8C8C',
+    border: '#595959',
   },
   
-  // Semantic Colors
+  // Cores Funcionais
+  surface: '#FFFFFF',
   success: '#10B981',
   error: '#EF4444',
   warning: '#F59E0B',
   info: '#3B82F6',
-  
-  // Background
-  background: '#F2F2F2',
-  surface: '#FFFFFF',
 };
 
 export const typography = {
@@ -83,6 +79,27 @@ export const borderRadius = {
 };
 
 export const shadows = {
+  card: {
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  navbar: {
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: -2 },
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
   sm: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -115,6 +132,7 @@ export const shadows = {
 // Gradientes padronizados
 export const gradients = {
   primary: ['#EE0BFF', '#0B30FF'],    // Rosa → Azul Futuro
+  header: ['#EE0BFF', '#0B30FF'],     // Header gradient
   secondary: ['#9C0AE8', '#6402FF'],  // Lilás → Roxo Elétrico
   tertiary: ['#6402FF', '#240AE8'],   // Roxo Elétrico → Azul Íon
   neutral: ['#F2F2F2', '#D9D9D9'],    // Neutro

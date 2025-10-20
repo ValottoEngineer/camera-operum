@@ -5,13 +5,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 
-import { GradientContainer } from '../components/GradientContainer';
+import { Header } from '../components/Header';
 import { Card } from '../components/Card';
 import { TextField } from '../components/TextField';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { SecondaryButton } from '../components/SecondaryButton';
 import { ConfirmPasswordModal } from '../components/ConfirmPasswordModal';
-import { BackButton } from '../components/BackButton';
 import { IconButton } from '../components/IconButton';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/auth';
@@ -154,34 +153,16 @@ export const ProfileScreen: React.FC<Props> = ({ navigation }) => {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <Header
+        title="Perfil"
+        onBackPress={() => navigation.goBack()}
+      />
+      
       <ScrollView
         style={{ flex: 1, backgroundColor: theme.colors.background }}
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
       >
-        <GradientContainer height={200}>
-          <Text
-            style={{
-              fontSize: theme.typography.sizes['3xl'],
-              fontWeight: theme.typography.weights.bold,
-              color: theme.colors.surface,
-              textAlign: 'center',
-              marginBottom: theme.spacing.sm,
-            }}
-          >
-            Perfil
-          </Text>
-          <Text
-            style={{
-              fontSize: theme.typography.sizes.lg,
-              fontWeight: theme.typography.weights.medium,
-              color: theme.colors.surface,
-              textAlign: 'center',
-            }}
-          >
-            {currentUser?.name}
-          </Text>
-        </GradientContainer>
 
         <View
           style={{

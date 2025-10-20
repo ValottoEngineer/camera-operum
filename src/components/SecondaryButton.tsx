@@ -1,62 +1,46 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, ViewStyle, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { theme } from '../styles/theme';
 
 interface SecondaryButtonProps {
-  title: string;
   onPress: () => void;
-  loading?: boolean;
+  title: string;
   disabled?: boolean;
-  style?: ViewStyle;
+  loading?: boolean;
 }
 
 export const SecondaryButton: React.FC<SecondaryButtonProps> = ({
-  title,
   onPress,
-  loading = false,
+  title,
   disabled = false,
-  style,
+  loading = false,
 }) => {
-  const isDisabled = disabled || loading;
-
   return (
     <TouchableOpacity
-      style={[styles.container, isDisabled && styles.disabled, style]}
       onPress={onPress}
-      disabled={isDisabled}
-      activeOpacity={0.7}
-      accessibilityLabel={title}
-      accessibilityRole="button"
+      disabled={disabled || loading}
+      activeOpacity={0.8}
+      style={{
+        height: 50,
+        borderRadius: 12,
+        backgroundColor: theme.colors.neon.purple,
+        justifyContent: 'center',
+        alignItems: 'center',
+        opacity: disabled ? 0.5 : 1,
+      }}
     >
       {loading ? (
-        <ActivityIndicator color={theme.colors.surface} size="small" />
+        <ActivityIndicator color="#FFFFFF" />
       ) : (
-        <Text style={[styles.text, isDisabled && styles.disabledText]}>{title}</Text>
+        <Text style={{
+          color: '#FFFFFF',
+          fontSize: 16,
+          fontWeight: '600',
+        }}>
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    height: 52,
-    backgroundColor: theme.colors.neon.purple,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-    ...theme.shadows.sm,
-  },
-  disabled: {
-    backgroundColor: theme.colors.neutral.border,
-    opacity: 0.6,
-  },
-  text: {
-    ...theme.typography.button,
-    color: theme.colors.surface,
-  },
-  disabledText: {
-    color: theme.colors.neutral.secondary,
-  },
-});

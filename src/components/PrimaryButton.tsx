@@ -1,72 +1,53 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, ViewStyle, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '../styles/theme';
 
 interface PrimaryButtonProps {
-  title: string;
   onPress: () => void;
-  loading?: boolean;
+  title: string;
   disabled?: boolean;
-  style?: ViewStyle;
+  loading?: boolean;
 }
 
 export const PrimaryButton: React.FC<PrimaryButtonProps> = ({
-  title,
   onPress,
-  loading = false,
+  title,
   disabled = false,
-  style,
+  loading = false,
 }) => {
-  const isDisabled = disabled || loading;
-
   return (
     <TouchableOpacity
-      style={[styles.container, isDisabled && styles.disabled, style]}
       onPress={onPress}
-      disabled={isDisabled}
-      activeOpacity={0.7}
-      accessibilityLabel={title}
-      accessibilityRole="button"
+      disabled={disabled || loading}
+      activeOpacity={0.8}
+      style={{ opacity: disabled ? 0.5 : 1 }}
     >
       <LinearGradient
-        colors={isDisabled ? [theme.colors.neutral.border, theme.colors.neutral.border] : theme.gradients.primary}
+        colors={theme.gradients.primary}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
-        style={styles.gradient}
+        style={{
+          height: 50,
+          borderRadius: 12,
+          justifyContent: 'center',
+          alignItems: 'center',
+          ...theme.shadows.button,
+        }}
       >
         {loading ? (
-          <ActivityIndicator color={theme.colors.surface} size="small" />
+          <ActivityIndicator color="#FFFFFF" />
         ) : (
-          <Text style={[styles.text, isDisabled && styles.disabledText]}>{title}</Text>
+          <Text style={{
+            color: '#FFFFFF',
+            fontSize: 16,
+            fontWeight: '600',
+          }}>
+            {title}
+          </Text>
         )}
       </LinearGradient>
     </TouchableOpacity>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    height: 52,
-    borderRadius: 16,
-    overflow: 'hidden',
-    ...theme.shadows.md,
-  },
-  gradient: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.xl,
-  },
-  disabled: {
-    opacity: 0.6,
-  },
-  text: {
-    ...theme.typography.button,
-    color: theme.colors.surface,
-  },
-  disabledText: {
-    color: theme.colors.neutral.secondary,
-  },
-});

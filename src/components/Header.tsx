@@ -1,66 +1,73 @@
 import React from 'react';
-import { View, Text, ViewStyle, StyleSheet } from 'react-native';
-import { GradientContainer } from './GradientContainer';
-import { BackButton } from './BackButton';
-import { IconButton } from './IconButton';
+import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../styles/theme';
 
 interface HeaderProps {
   title: string;
   onBackPress?: () => void;
-  rightIcon?: keyof typeof import('@expo/vector-icons').Ionicons.glyphMap;
-  onRightIconPress?: () => void;
-  showBackButton?: boolean;
-  style?: ViewStyle;
+  rightComponent?: React.ReactNode;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  title,
-  onBackPress,
-  rightIcon,
-  onRightIconPress,
-  showBackButton = true,
-  style,
-}) => {
+export const Header: React.FC<HeaderProps> = ({ title, onBackPress, rightComponent }) => {
   return (
-    <GradientContainer height={120} style={style}>
-      <View style={styles.container}>
-        {showBackButton && onBackPress && (
-          <BackButton onPress={onBackPress} />
+    <LinearGradient
+      colors={theme.gradients.header}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{ height: 100 }}
+    >
+      {Platform.OS === 'ios' && (
+        <BlurView intensity={15} style={StyleSheet.absoluteFillObject} />
+      )}
+      
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 40,
+      }}>
+        {onBackPress && (
+          <TouchableOpacity
+            onPress={onBackPress}
+            style={{
+              position: 'absolute',
+              left: 20,
+              top: 40,
+              width: 40,
+              height: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
         )}
         
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title}</Text>
-        </View>
+        <Text style={{
+          fontSize: 20,
+          fontWeight: '600',
+          color: '#FFFFFF',
+          textAlign: 'center',
+        }}>
+          {title}
+        </Text>
         
-        {rightIcon && onRightIconPress && (
-          <IconButton
-            iconName={rightIcon}
-            onPress={onRightIconPress}
-            color={theme.colors.surface}
-          />
+        {rightComponent && (
+          <View style={{
+            position: 'absolute',
+            right: 20,
+            top: 40,
+          }}>
+            {rightComponent}
+          </View>
         )}
       </View>
-    </GradientContainer>
+    </LinearGradient>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingTop: theme.spacing.lg,
-  },
-  titleContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginHorizontal: theme.spacing.lg,
-  },
-  title: {
-    ...theme.typography.h2,
-    color: theme.colors.surface,
-    textAlign: 'center',
-  },
-});

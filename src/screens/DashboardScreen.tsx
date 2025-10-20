@@ -217,34 +217,6 @@ export const DashboardScreen: React.FC<Props> = ({ navigation }) => {
                 color={theme.colors.neon.electric}
                 size="medium"
               />
-              
-              <IconButton
-                iconName="chatbubbles"
-                onPress={() => navigation.navigate('Chat')}
-                color={theme.colors.neon.electric}
-                size="medium"
-              />
-              
-              <IconButton
-                iconName="search"
-                onPress={() => navigation.navigate('Search')}
-                color={theme.colors.neon.electric}
-                size="medium"
-              />
-              
-              <IconButton
-                iconName="calculator"
-                onPress={() => navigation.navigate('Simulator')}
-                color={theme.colors.neon.electric}
-                size="medium"
-              />
-              
-              <IconButton
-                iconName="person"
-                onPress={() => navigation.navigate('Profile')}
-                color={theme.colors.neon.electric}
-                size="medium"
-              />
             </View>
           </View>
 

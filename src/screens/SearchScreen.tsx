@@ -2,10 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, SafeAreaView, RefreshControl, TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import { GradientContainer } from '../components/GradientContainer';
+import { Header } from '../components/Header';
 import { SearchBar } from '../components/SearchBar';
 import { StockListItem } from '../components/StockListItem';
-import { BackButton } from '../components/BackButton';
 import { Card } from '../components/Card';
 import { useAuth } from '../context/AuthContext';
 import { brapiService } from '../services/brapiService';
@@ -134,40 +133,10 @@ export const SearchScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <GradientContainer height={200}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: theme.spacing.md,
-          }}
-        >
-          <BackButton onPress={() => navigation.goBack()} color={theme.colors.surface} />
-        </View>
-
-        <Text
-          style={{
-            fontSize: theme.typography.sizes['3xl'],
-            fontWeight: theme.typography.weights.bold,
-            color: theme.colors.surface,
-            textAlign: 'center',
-            marginBottom: theme.spacing.sm,
-          }}
-        >
-          Explorar Ações
-        </Text>
-        <Text
-          style={{
-            fontSize: theme.typography.sizes.lg,
-            fontWeight: theme.typography.weights.medium,
-            color: theme.colors.surface,
-            textAlign: 'center',
-          }}
-        >
-          Encontre as melhores oportunidades
-        </Text>
-      </GradientContainer>
+      <Header
+        title="Explorar Ações"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <View style={{ flex: 1, paddingTop: theme.spacing['2xl'] }}>
         {/* Barra de busca */}
