@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,11 +10,12 @@ import { Card } from '../components/Card';
 import { TextField } from '../components/TextField';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { InlineLink } from '../components/InlineLink';
-import { IconButton } from '../components/IconButton';
 import { useAuth } from '../context/AuthContext';
 import { loginSchema, LoginFormData } from '../validation/schemas';
 import { theme } from '../styles/theme';
 import { AuthStackParamList } from '../navigation/AuthStack';
+
+import { startFaceSession, getFaceStatus, cancelFaceSession } from '../services/httpFace';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -25,6 +26,10 @@ interface Props {
 export const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { login, isLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // estado do login facial
+  const [isFaceLoading, setIsFaceLoading] = useState(false);
+  const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
     control,
@@ -38,30 +43,63 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
     setIsSubmitting(true);
     try {
       const result = await login(data.email, data.password);
-      
       if (result.success) {
-        Toast.show({
-          type: 'success',
-          text1: 'Login realizado',
-          text2: 'Bem-vindo ao Operum!',
-        });
+        Toast.show({ type: 'success', text1: 'Login realizado', text2: 'Bem-vindo ao Operum!' });
       } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Erro no login',
-          text2: result.error || 'Credenciais inválidas.',
-        });
+        Toast.show({ type: 'error', text1: 'Erro no login', text2: result.error || 'Credenciais inválidas.' });
       }
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Erro no login',
-        text2: 'Tente novamente mais tarde.',
-      });
+    } catch {
+      Toast.show({ type: 'error', text1: 'Erro no login', text2: 'Tente novamente mais tarde.' });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  // --- login facial simples: inicia e faz polling do /status a cada 1s ---
+  const startFace = async () => {
+    try {
+      setIsFaceLoading(true);
+      await startFaceSession(); // Flask coloca status="pending"
+      Toast.show({
+        type: 'info',
+        text1: 'Aguardando reconhecimento',
+        text2: 'Abra o módulo Python para aprovar.',
+      });
+
+      pollTimerRef.current = setInterval(async () => {
+        try {
+          const status = await getFaceStatus();
+          if (status === 'approved') {
+            clearPoll();
+            Toast.show({ type: 'success', text1: 'Login facial aprovado' });
+            // aqui você pode chamar um "login guest" ou navegar
+            // ex.: navigation.replace('Dashboard'); (ajuste ao seu fluxo)
+          } else if (status === 'rejected' || status === 'idle' || status === 'cancelled') {
+            clearPoll();
+            if (status === 'rejected') {
+              Toast.show({ type: 'error', text1: 'Reconhecimento rejeitado' });
+            }
+          }
+        } catch {
+          // ignora erros momentâneos no polling
+        }
+      }, 1000);
+    } catch {
+      setIsFaceLoading(false);
+      Toast.show({ type: 'error', text1: 'Não foi possível iniciar o login facial' });
+    }
+  };
+
+  const clearPoll = () => {
+    if (pollTimerRef.current) clearInterval(pollTimerRef.current);
+    pollTimerRef.current = null;
+    setIsFaceLoading(false);
+    cancelFaceSession().catch(() => {});
+  };
+
+  useEffect(() => {
+    return () => clearPoll(); // limpar ao desmontar a tela
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -136,7 +174,6 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
                   onBlur={onBlur}
                   error={errors.password?.message}
                   secureTextEntry
-                  style={{ marginBottom: theme.spacing.xl }}
                 />
               )}
             />
@@ -145,12 +182,20 @@ export const LoginScreen: React.FC<Props> = ({ navigation }) => {
               title="Entrar"
               onPress={handleSubmit(onSubmit)}
               loading={isSubmitting || isLoading}
+              style={{ marginTop: theme.spacing.lg }}
+            />
+
+            <PrimaryButton
+              title="Entrar com reconhecimento facial (beta)"
+              onPress={startFace}
+              loading={isFaceLoading}
+              style={{ marginTop: theme.spacing.md, opacity: isFaceLoading ? 0.8 : 1 }}
             />
 
             <InlineLink
               title="Criar conta"
               onPress={() => navigation.navigate('Register')}
-              style={{ marginTop: theme.spacing.xl }}
+              style={{ marginTop: theme.spacing.lg }}
             />
           </Card>
         </View>
